@@ -12,9 +12,7 @@ class Penilaian extends Model
 
     protected $fillable = 
     [
-        'nik',
-        'rank',
-        'ket'
+        'nilai',
+        'kriteria_id',
     ];
-
 }

@@ -6,17 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-class PenerimaBantuan extends Model
+class Alternatif extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = 
     [
-        'nik',
+        'kode',
         'nama',
-        'penghasilan',
-        'jml_tanggungan',
-        'pekerjaan'
+        'alamat',
+        'no_hp'
     ];
 }

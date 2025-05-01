@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_sub_kriteria');
             $table->integer('nilai');
+            $table->foreignId('kriteria_id')->constrained()->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenerimaBantuanResource\Pages;
-use App\Filament\Resources\PenerimaBantuanResource\RelationManagers;
-use App\Models\PenerimaBantuan;
+use App\Filament\Resources\AlternatifResource\Pages;
+use App\Filament\Resources\AlternatifResource\RelationManagers;
+use App\Models\Alternatif;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,13 +13,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PenerimaBantuanResource extends Resource
+class AlternatifResource extends Resource
 {
-    protected static ?string $model = PenerimaBantuan::class;
+    protected static ?string $model = Alternatif::class;
 
-    protected static ?int $navigationSort = 3;
-
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -58,9 +56,9 @@ class PenerimaBantuanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenerimaBantuans::route('/'),
-            'create' => Pages\CreatePenerimaBantuan::route('/create'),
-            'edit' => Pages\EditPenerimaBantuan::route('/{record}/edit'),
+            'index' => Pages\ListAlternatifs::route('/'),
+            'create' => Pages\CreateAlternatif::route('/create'),
+            'edit' => Pages\EditAlternatif::route('/{record}/edit'),
         ];
     }
 }
