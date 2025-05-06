@@ -34,8 +34,6 @@ class KriteriaResource extends Resource
                 ->required(),
                 TextInput::make('bobot')
                 ->required(),
-                TextInput::make('keterangan')
-                ->required()
             ]);
     }
 
@@ -46,7 +44,6 @@ class KriteriaResource extends Resource
                 TextColumn::make('kode'),
                 TextColumn::make('nama_kriteria'),
                 TextColumn::make('bobot'),
-                TextColumn::make('keterangan')
             ])
             ->filters([
                 //

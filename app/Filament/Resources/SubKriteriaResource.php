@@ -29,7 +29,7 @@ class SubKriteriaResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('kriteria'),
+                TextInput::make('kriteria.nama_kriteria'),
                 TextInput::make('nama_sub_kriteria'),
                 TextInput::make('nilai')
             ]);
@@ -39,8 +39,10 @@ class SubKriteriaResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('kriteria.nama_kriteria'),
                 TextColumn::make('nama_sub_kriteria'),
                 TextColumn::make('nilai')
+                ->label('Skor')
             
             ])
             ->filters([

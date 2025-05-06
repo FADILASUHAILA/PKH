@@ -6,23 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Alternatif extends Model
+class Penerima extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable =
+    protected $fillable = 
     [
-        'kode',
         'nama',
+        'nik',
+        'tmpt_tgl_lahir',
+        'jenis_kelamin',
+        'alamat',
+        'no_hp',
         'desa_id',
     ];
-
-    public function alternatifs()
-    {
-        return $this->hasMany(Kriteria::class);
-    }
     public function desa()
     {
-        return $this->belongsTo(Desa::class, 'desa_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda
+        return $this->belongsTo(Desa::class);
     }
 }

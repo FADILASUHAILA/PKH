@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Penerima;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,6 +19,14 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
+        ]);
+        $this->call([
+            DesaTableSeeder::class,
+            AlternatifSeeder::class,
+            KriteriaSeeder::class,
+            SubKriteriaSeeder::class,
+            PenerimaSeeder::class,
+            // Seeder lainnya...
         ]);
     }
 }

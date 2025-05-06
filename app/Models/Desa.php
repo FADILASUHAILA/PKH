@@ -6,23 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-class SubKriteria extends Model
+class Desa extends Model
 {
-    
     use HasFactory, SoftDeletes;
 
     protected $fillable = 
     [
-        'kriteria_id',
-        'nama_sub_kriteria',
-        'nilai',
+        'nama',
     ];
 
-    public function kriteria()
+    public function desas()
     {
-        return $this->belongsTo(Kriteria::class, 'kriteria_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda
+        return $this->hasMany(Desa::class);
+    }
+    public function penerima()
+    {
+    	return $this->hasOne(Penerima::class);
     }
 }
-
-
