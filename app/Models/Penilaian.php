@@ -10,9 +10,24 @@ class Penilaian extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = 
+    protected $fillable =
     [
-        'nilai',
-        'kriteria_id',
+        'id',
+        'alternatif_id',
+        'kode',
+        'desa_id',
+        'nilai_kriteria1',
+        'nilai_kriteria2',
+
     ];
+    public function desa()
+    {
+        return $this->belongsTo(Desa::class);
+    }
+
+    // Relasi ke Alternatif
+    public function alternatif()
+    {
+        return $this->belongsTo(Alternatif::class);
+    }
 }

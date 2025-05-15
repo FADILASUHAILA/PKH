@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('penilaians', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('alternatif_id');
+            $table->string('kode');
+            $table->unsignedBigInteger('desa_id');
+            $table->unsignedBigInteger('nilai_kriteria1');
+            $table->unsignedBigInteger('nilai_kriteria2');
             $table->softDeletes();
-            $table->integer('nilai');
-            $table->foreignId('kriteria_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+    
         });
     }
 
@@ -28,3 +32,4 @@ return new class extends Migration
         Schema::dropIfExists('penilaians');
     }
 };
+
