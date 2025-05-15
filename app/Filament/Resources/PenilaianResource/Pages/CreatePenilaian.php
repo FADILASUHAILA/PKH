@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePenilaian extends CreateRecord
 {
     protected static string $resource = PenilaianResource::class;
+
+    protected static string $view = 'filament.resources.penilaian.create-penilaian';
 }

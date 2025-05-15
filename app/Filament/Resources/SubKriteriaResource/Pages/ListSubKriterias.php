@@ -14,7 +14,7 @@ class ListSubKriterias extends Page
 
     protected static string $view = 'filament.resources.sub-kriteria-resource.pages.custom-sub-kriteria';
 
-     public $kriterias;
+    public $kriterias;
 
     public function mount()
     {
