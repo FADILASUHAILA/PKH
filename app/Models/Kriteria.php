@@ -22,6 +22,10 @@ class Kriteria extends Model
     {
         return $this->hasMany(SubKriteria::class);
     }
+    public function penilaians()
+    {
+        return $this->hasMany(Penilaian::class);
+    }
     public function alternatif()
     {
         return $this->belongsTo(Alternatif::class, 'alternatif_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda

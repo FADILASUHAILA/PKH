@@ -17,9 +17,13 @@ class Alternatif extends Model
         'desa_id',
     ];
 
-    public function alternatifs()
+    public function kriterias()
     {
         return $this->hasMany(Kriteria::class);
+    }
+    public function penilaians()
+    {
+        return $this->hasMany(Penilaian::class);
     }
     public function desa()
     {

@@ -14,15 +14,14 @@ class Penilaian extends Model
     [
         'id',
         'alternatif_id',
-        'kode',
-        'desa_id',
-        'nilai_kriteria1',
-        'nilai_kriteria2',
+        'kriteria_id',
+        'nilai',
+    
 
     ];
-    public function desa()
+    public function kriteria()
     {
-        return $this->belongsTo(Desa::class);
+        return $this->belongsTo(Kriteria::class);
     }
 
     // Relasi ke Alternatif
@@ -30,4 +29,5 @@ class Penilaian extends Model
     {
         return $this->belongsTo(Alternatif::class);
     }
+
 }
