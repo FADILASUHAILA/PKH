@@ -16,7 +16,7 @@ class Penilaian extends Model
         'alternatif_id',
         'kriteria_id',
         'nilai',
-    
+
 
     ];
     public function kriteria()
@@ -27,7 +27,6 @@ class Penilaian extends Model
     // Relasi ke Alternatif
     public function alternatif()
     {
-        return $this->belongsTo(Alternatif::class);
+        return $this->belongsTo(Alternatif::class, 'alternatif_id');
     }
-
 }
