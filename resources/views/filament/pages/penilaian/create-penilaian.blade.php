@@ -18,7 +18,7 @@
                     @case(4) border-pink-500 @break
                     @default border-gray-500
                 @endswitch">
-                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-8">
                             {{ $kriteria->kode }} - {{ $kriteria->nama_kriteria }}
                         </h2>
                         <div class="space-y-4">
@@ -30,7 +30,7 @@
                                 @foreach($kriteria->subkriterias as $subkriteria)
                                 <option value="{{ $subkriteria->id }}">
                                     {{ $subkriteria->nama_sub_kriteria }}
-                                    (Nilai: {{ $subkriteria->nilai }})
+
                                 </option>
                                 @endforeach
                             </select>
@@ -61,7 +61,7 @@
                                 @foreach($kriteria->subkriterias as $subkriteria)
                                 <option value="{{ $subkriteria->id }}">
                                     {{ $subkriteria->nama_sub_kriteria }}
-                                    (Nilai: {{ $subkriteria->nilai }})
+
                                 </option>
                                 @endforeach
                             </select>
