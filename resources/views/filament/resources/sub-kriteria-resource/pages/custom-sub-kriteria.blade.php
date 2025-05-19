@@ -1,12 +1,8 @@
 <x-filament::page>
     <div class="space-y-8">
-        <!-- Stats Cards -->
-        
-            
-
         <!-- Add Kriteria Button -->
-        <div class="flex justify-end">
-            <x-filament::button 
+        <div class="flex justify-start mb-8">
+            <x-filament::button
                 icon="heroicon-o-plus"
                 tag="a"
                 href="{{ route('filament.admin.resources.kriterias.create') }}"
@@ -17,11 +13,11 @@
 
         <!-- Kriteria Cards -->
         @foreach($kriterias as $kriteria)
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 transition-all hover:shadow-xl">
+        <div class="bg-white mb-8 dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 transition-all hover:shadow-xl">
             <!-- Card Header -->
             <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-200 flex items-center justify-center">
+                    <div class="flex-shrink-0 h-10 w-10 mr-2 rounded-lg bg-primary-100 dark:bg-blue-900 text-primary-600 dark:text-blue-200 flex items-center justify-center">
                         <span class="font-bold">{{ $loop->iteration }}</span>
                     </div>
                     <div>
@@ -32,21 +28,21 @@
                             <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
                                 Bobot: {{ $kriteria->bobot }}%
                             </span>
-                            <span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
+                            <span class="text-xs px-2 py-1 rounded-full bg-primary-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                                 {{ count($kriteria->subKriterias) }} Subkriteria
                             </span>
                         </div>
                     </div>
                 </div>
-                <x-filament::button 
-                    icon="heroicon-o-pencil"
-                    color="gray"
-                    tag="a"
-                    href="{{ route('filament.admin.resources.kriterias.edit', $kriteria) }}"
-                    size="xs"
-                    outlined>
-                    Edit
-                </x-filament::button>
+                <div class="px-6 py-3 text-right">
+                    <x-filament::button
+                        icon="heroicon-o-plus"
+                        tag="a"
+                        href="{{ route('filament.admin.resources.sub-kriterias.create', ['kriteria_id' => $kriteria->id]) }}"
+                        size="xs">
+                        Tambah Sub-Kriteria
+                    </x-filament::button>
+                </div>
             </div>
 
             <!-- Subkriteria Table -->
@@ -57,7 +53,8 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-8">
                                 No
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 450px">
                                 Sub Kriteria
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -80,13 +77,13 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
+                                <span class="py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                                     {{ $sub->nilai }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">
-                                    <x-filament::button 
+                                    <x-filament::button
                                         icon="heroicon-o-pencil"
                                         color="gray"
                                         tag="a"
@@ -97,7 +94,7 @@
                                     <form action="" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <x-filament::button 
+                                        <x-filament::button
                                             icon="heroicon-o-trash"
                                             color="danger"
                                             size="xs"
@@ -125,17 +122,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Add Subkriteria Button -->
-            <div class="px-6 py-3 bg-gray-50 dark:bg-gray-700/30 border-t border-gray-200 dark:border-gray-700 text-right">
-                <x-filament::button 
-                    icon="heroicon-o-plus"
-                    tag="a"
-                    href="{{ route('filament.admin.resources.sub-kriterias.create', ['kriteria_id' => $kriteria->id]) }}"
-                    size="xs">
-                    Tambah Subkriteria
-                </x-filament::button>
-            </div>
         </div>
         @endforeach
 
@@ -148,7 +134,7 @@
             <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Belum ada kriteria</h3>
             <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Mulai dengan membuat kriteria baru untuk sistem penilaian Anda.</p>
             <div class="mt-6">
-                <x-filament::button 
+                <x-filament::button
                     icon="heroicon-o-plus"
                     tag="a"
                     href="{{ route('filament.admin.resources.kriterias.create') }}"

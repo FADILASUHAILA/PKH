@@ -13,6 +13,8 @@ class CreatePenilaian extends Page
 
     protected static string $view = 'filament.pages.penilaian.create-penilaian';
 
+    protected static ?string $title = '';
+
     public static function shouldRegisterNavigation(): bool
     {
         return false;

@@ -1,7 +1,7 @@
 <x-filament-panels::page>
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl">
         <!-- Header -->
-        <div class="text-center mb-8">
+        <div class="text-center py-2 mb-8 bg-white rounded-lg shadow-md">
             <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Penilaian - {{ $alternatif_id->nama }}</h1>
         </div>
 
@@ -18,7 +18,7 @@
                     @case(4) border-pink-500 @break
                     @default border-gray-500
                 @endswitch">
-                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-8">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
                             {{ $kriteria->kode }} - {{ $kriteria->nama_kriteria }}
                         </h2>
                         <div class="space-y-4">
