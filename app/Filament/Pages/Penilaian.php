@@ -6,9 +6,12 @@ use App\Models\Alternatif;
 use App\Models\Penilaian as ModelsPenilaian;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+
 
 class Penilaian extends Page
 {
+    use HasPageShield;
     protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
 
     protected static string $view = 'filament.pages.penilaian';
