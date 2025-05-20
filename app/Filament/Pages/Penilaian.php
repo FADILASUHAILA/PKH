@@ -4,9 +4,12 @@ namespace App\Filament\Pages;
 
 use App\Models\Alternatif;
 use App\Models\Penilaian as ModelsPenilaian;
+use App\Services\PrometheeService;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 
 
 class Penilaian extends Page
@@ -29,5 +32,61 @@ class Penilaian extends Page
     protected function getTableQuery(): Builder
     {
         return parent::getTableQuery()->with('penilaian');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [Action::make('hitungPromethee')
+            ->label('Hitung PROMETHEE')
+            ->icon('heroicon-o-calculator')
+            ->color('success')
+            ->action(function (PrometheeService $prometheeService) {
+                try {
+                    $results = $prometheeService->calculate();
+                    // dd($results);
+
+                    // Simpan hasil ke database jika diperlukan
+                    // foreach ($results as $result) {
+                    //     // Contoh penyimpanan hasil
+                    //     $resultModel = \App\Models\HasilPromethee::updateOrCreate(
+                    //         ['alternatif_id' => $result['alternatif']->id],
+                    //         [
+                    //             'leaving_flow' => $result['leaving'],
+                    //             'entering_flow' => $result['entering'],
+                    //             'net_flow' => $result['net'],
+                    //             'ranking' => array_search($result, $results) + 1
+                    //         ]
+                    //     );
+                    // }
+
+                    Notification::make()
+                        ->title('Perhitungan PROMETHEE Berhasil')
+                        ->success()
+                        ->send();
+
+                    // return redirect()->route('filament.admin.pages.promethee-result');
+                    return view('promethee.results', [
+                        'results' => $results,
+                        'decisionMatrix' => $results['decisionMatrix'],
+                        'preferenceMatrix' => $results['preferenceMatrix'],
+                        'leavingFlow' => $results['leavingFlow'],
+                        'enteringFlow' => $results['enteringFlow'],
+                        'netFlow' => $results['netFlow'],
+                        'ranking' => $results['ranking'],
+                        'alternatifs' => $results['alternatifs'],
+                        'kriterias' => $results['kriterias']
+                    ]);
+                } catch (\Exception $e) {
+                    Notification::make()
+                        ->title('Gagal Menghitung PROMETHEE')
+                        ->body($e->getMessage())
+                        ->danger()
+                        ->send();
+                }
+            })
+            ->requiresConfirmation()
+            ->modalHeading('Hitung PROMETHEE')
+            ->modalSubheading('Apakah Anda yakin ingin menjalankan perhitungan PROMETHEE?')
+            ->modalButton('Ya, Hitung Sekarang')];
     }
 }

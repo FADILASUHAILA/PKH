@@ -21,7 +21,7 @@ class Alternatif extends Model
     {
         return $this->hasMany(Kriteria::class);
     }
-    public function penilaian()
+    public function penilaians()
     {
         return $this->hasMany(Penilaian::class, 'alternatif_id');
         // Jika kolom foreign key berbeda, sesuaikan parameter kedua
