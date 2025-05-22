@@ -15,6 +15,7 @@ class Penilaian extends Model
         'id',
         'alternatif_id',
         'kriteria_id',
+        'subkriteria_id',
         'nilai',
 
 
@@ -28,5 +29,10 @@ class Penilaian extends Model
     public function alternatif()
     {
         return $this->belongsTo(Alternatif::class, 'alternatif_id');
+    }
+
+    public function subkriteria()
+    {
+        return $this->belongsTo(SubKriteria::class);
     }
 }
