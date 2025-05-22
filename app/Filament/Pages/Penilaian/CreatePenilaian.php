@@ -5,6 +5,7 @@ namespace App\Filament\Pages\Penilaian;
 use App\Models\Alternatif;
 use Filament\Pages\Page;
 use App\Models\Penilaian;
+use App\Models\Kriteria;
 use Illuminate\Support\Facades\Route;
 
 class CreatePenilaian extends Page
@@ -19,6 +20,7 @@ class CreatePenilaian extends Page
     {
         return false;
     }
+    
     public static function getRoutes(): array
     {
         return [
@@ -29,16 +31,26 @@ class CreatePenilaian extends Page
     public $alternatif_id;
     public $leftColumnKriterias;
     public $rightColumnKriterias;
-
-    public $kriteria = []; // Initialize kriteria as an array
+    public $kriteria = [];
+    public $existingPenilaian = [];
+    public $allKriterias;
 
     public function mount()
     {
         $this->alternatif_id = Alternatif::findOrFail(request('alternatif_id'));
-        $kriterias = \App\Models\Kriteria::with('subkriterias')->get();
+        $this->allKriterias = Kriteria::with('subkriterias')->get();
 
-        $this->leftColumnKriterias = $kriterias->filter(fn($item, $key) => $key % 2 == 0);
-        $this->rightColumnKriterias = $kriterias->filter(fn($item, $key) => $key % 2 != 0);
+        // Load existing penilaian if any
+        $existingPenilaian = Penilaian::where('alternatif_id', $this->alternatif_id->id)->get();
+        
+        foreach ($existingPenilaian as $penilaian) {
+            $this->kriteria[$penilaian->kriteria_id] = $penilaian->subkriteria_id;
+            $this->existingPenilaian[$penilaian->kriteria_id] = $penilaian->id;
+        }
+
+        // Split kriterias into two columns
+        $this->leftColumnKriterias = $this->allKriterias->filter(fn($item, $key) => $key % 2 == 0);
+        $this->rightColumnKriterias = $this->allKriterias->filter(fn($item, $key) => $key % 2 != 0);
     }
 
     protected function getFormSchema(): array
@@ -48,26 +60,51 @@ class CreatePenilaian extends Page
 
     public function submit()
     {
-        $this->validate([
-            'kriteria' => 'required|array',
-            'kriteria.*' => 'required|exists:sub_kriterias,id'
+        // Validasi semua kriteria harus diisi
+        $validationRules = [];
+        foreach ($this->allKriterias as $kriteria) {
+            $validationRules['kriteria.'.$kriteria->id] = 'required|exists:sub_kriterias,id';
+        }
+
+        $this->validate($validationRules, [
+            'kriteria.*.required' => 'Semua kriteria harus diisi',
+            'kriteria.*.exists' => 'Sub kriteria yang dipilih tidak valid'
         ]);
 
-        // Delete existing penilaian for this alternatif if any
-        // Penilaian::where('id_alternatif', $this->alternatif_id->id)->delete();
-
-        // Create new penilaian records
-        foreach ($this->kriteria as $kriteriaId => $subkriteriaId) {
+        // Proses penyimpanan data
+        foreach ($this->allKriterias as $kriteria) {
+            $subkriteriaId = $this->kriteria[$kriteria->id];
             $subkriteria = \App\Models\SubKriteria::findOrFail($subkriteriaId);
 
-            Penilaian::create([
-                'alternatif_id' => $this->alternatif_id->id,
-                'kriteria_id' => $kriteriaId,
-                'nilai' => $subkriteria->nilai
-            ]);
+            if (isset($this->existingPenilaian[$kriteria->id])) {
+                // Update existing penilaian
+                Penilaian::where('id', $this->existingPenilaian[$kriteria->id])
+                    ->update([
+                        'subkriteria_id' => $subkriteriaId,
+                        'nilai' => $subkriteria->nilai
+                    ]);
+            } else {
+                // Create new penilaian
+                Penilaian::create([
+                    'alternatif_id' => $this->alternatif_id->id,
+                    'kriteria_id' => $kriteria->id,
+                    'subkriteria_id' => $subkriteriaId,
+                    'nilai' => $subkriteria->nilai
+                ]);
+            }
         }
 
         return redirect()->route('filament.admin.pages.penilaian')
             ->with('success', 'Penilaian berhasil disimpan!');
+    }
+
+    public function isComplete()
+    {
+        foreach ($this->allKriterias as $kriteria) {
+            if (!isset($this->kriteria[$kriteria->id])) {
+                return false;
+            }
+        }
+        return true;
     }
 }

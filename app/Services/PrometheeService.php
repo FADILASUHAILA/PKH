@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Alternatif;
@@ -31,7 +32,7 @@ class PrometheeService
 
     private function loadData()
     {
-        $this->alternatifs = Alternatif::with('penilaians')->get();
+        $this->alternatifs = Alternatif::with('penilaian')->get();
         $this->kriterias = Kriteria::all();
     }
 
@@ -48,7 +49,7 @@ class PrometheeService
         $this->decisionMatrix = [];
         foreach ($this->alternatifs as $alt) {
             foreach ($this->kriterias as $kriteria) {
-                $penilaian = $alt->penilaians->firstWhere('kriteria_id', $kriteria->id);
+                $penilaian = $alt->penilaian->firstWhere('kriteria_id', $kriteria->id);
                 $this->decisionMatrix[$alt->id][$kriteria->id] = $penilaian ? $penilaian->nilai : 0;
             }
         }
@@ -64,21 +65,23 @@ class PrometheeService
                     continue;
                 }
 
+                //cari nilai preferensi nya
+
                 $totalPreference = 0;
                 foreach ($this->kriterias as $kriteria) {
                     $nilaiA = $this->decisionMatrix[$a->id][$kriteria->id] ?? 0;
                     $nilaiB = $this->decisionMatrix[$b->id][$kriteria->id] ?? 0;
-                    
+
                     // Preferensi usual
                     if ($kriteria->jenis === 'benefit') {
                         $pref = ($nilaiA > $nilaiB) ? 1 : 0;
                     } else { // cost
                         $pref = ($nilaiA < $nilaiB) ? 1 : 0;
                     }
-                    
+
                     $totalPreference += $pref * $this->normalizedWeights[$kriteria->id];
                 }
-                
+
                 $this->preferenceMatrix[$a->id][$b->id] = $totalPreference;
             }
         }
@@ -87,14 +90,14 @@ class PrometheeService
     private function calculateFlows()
     {
         $n = count($this->alternatifs);
-        
+
         // Leaving Flow (Φ+)
         $this->leavingFlow = [];
         foreach ($this->alternatifs as $a) {
             $sum = array_sum($this->preferenceMatrix[$a->id]);
             $this->leavingFlow[$a->id] = $sum / ($n - 1);
         }
-        
+
         // Entering Flow (Φ-)
         $this->enteringFlow = [];
         foreach ($this->alternatifs as $a) {
@@ -106,7 +109,7 @@ class PrometheeService
             }
             $this->enteringFlow[$a->id] = $sum / ($n - 1);
         }
-        
+
         // Net Flow (Φ)
         $this->netFlow = [];
         foreach ($this->alternatifs as $a) {
@@ -118,7 +121,7 @@ class PrometheeService
     {
         $sorted = $this->netFlow;
         arsort($sorted);
-        
+
         $this->ranking = [];
         $rank = 1;
         foreach ($sorted as $altId => $value) {
@@ -130,14 +133,13 @@ class PrometheeService
     {
         return [
             'decisionMatrix' => $this->decisionMatrix,
-            'normalizedWeights' => $this->normalizedWeights,
             'preferenceMatrix' => $this->preferenceMatrix,
             'leavingFlow' => $this->leavingFlow,
             'enteringFlow' => $this->enteringFlow,
             'netFlow' => $this->netFlow,
             'ranking' => $this->ranking,
-            'alternatifs' => $this->alternatifs,
-            'kriterias' => $this->kriterias
+            'alternatif_ids' => $this->alternatifs->pluck('id')->toArray(),
+            'kriteria_ids' => $this->kriterias->pluck('id')->toArray()
         ];
     }
 }

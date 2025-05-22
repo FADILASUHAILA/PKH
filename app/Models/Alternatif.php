@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Alternatif extends Model
@@ -21,10 +22,9 @@ class Alternatif extends Model
     {
         return $this->hasMany(Kriteria::class);
     }
-    public function penilaians()
+    public function penilaian(): HasMany
     {
         return $this->hasMany(Penilaian::class, 'alternatif_id');
-        // Jika kolom foreign key berbeda, sesuaikan parameter kedua
     }
     public function desa()
     {

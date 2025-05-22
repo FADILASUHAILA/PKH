@@ -64,17 +64,11 @@ class Penilaian extends Page
                         ->success()
                         ->send();
 
+                    // dd($results['preferenceMatrix']);
+
                     // return redirect()->route('filament.admin.pages.promethee-result');
                     return redirect()->route('filament.admin.pages.hasil-penilaian', [
-                        'results' => $results,
-                        'decisionMatrix' => $results['decisionMatrix'],
-                        'preferenceMatrix' => $results['preferenceMatrix'],
-                        'leavingFlow' => $results['leavingFlow'],
-                        'enteringFlow' => $results['enteringFlow'],
-                        'netFlow' => $results['netFlow'],
-                        'ranking' => $results['ranking'],
-                        'alternatifs' => $results['alternatifs'],
-                        'kriterias' => $results['kriterias']
+                        'results' => json_encode($results) // Encode sebagai JSON
                     ]);
                 } catch (\Exception $e) {
                     Notification::make()

@@ -26,17 +26,22 @@ class HasilPenilaian extends Page
 
     public function mount(): void
     {
-        // dd(request('results'));
-        if (request('results')) {
-            $this->results = request('results');
+        if ($results = request('results')) {
+            $results = json_decode($results, true);
+
+            $this->results = $results;
             $this->decisionMatrix = $results['decisionMatrix'] ?? [];
             $this->preferenceMatrix = $results['preferenceMatrix'] ?? [];
             $this->leavingFlow = $results['leavingFlow'] ?? [];
             $this->enteringFlow = $results['enteringFlow'] ?? [];
             $this->netFlow = $results['netFlow'] ?? [];
             $this->ranking = $results['ranking'] ?? [];
-            $this->alternatifs = $results['alternatifs'] ?? null;
-            $this->kriterias = $results['kriterias'] ?? null;
+
+            // Load models fresh from database
+            $this->alternatifs = \App\Models\Alternatif::findMany($results['alternatif_ids'] ?? []);
+            $this->kriterias = \App\Models\Kriteria::findMany($results['kriteria_ids'] ?? []);
+
+            // dd($this->decisionMatrix);
         }
     }
 }

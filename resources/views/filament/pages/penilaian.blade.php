@@ -31,6 +31,12 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($alternatifs as $alternatif)
+                    @php
+                    // Hitung jumlah kriteria yang sudah dinilai untuk alternatif ini
+                    $jumlahKriteria = \App\Models\Kriteria::count();
+                    $jumlahPenilaian = $alternatif->penilaian()->count();
+                    $sudahDinilai = $jumlahPenilaian === $jumlahKriteria;
+                    @endphp
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -57,32 +63,50 @@
                             <div class="text-sm text-gray-500">{{ $alternatif->kecamatan->nama ?? 'Kecamatan' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @if($alternatif->penilaian && $alternatif->penilaian->count() > 0)
+                            @if($sudahDinilai)
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                Sudah Dinilai
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                Sudah Dinilai ({{ $jumlahPenilaian }}/{{ $jumlahKriteria }})
+                            </span>
+                            @elseif($jumlahPenilaian > 0)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Proses ({{ $jumlahPenilaian }}/{{ $jumlahKriteria }})
                             </span>
                             @else
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
                                 Belum Dinilai
                             </span>
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex justify-end gap-2">
+                                @if($sudahDinilai)
+                                {{-- Tombol Edit --}}
                                 <a href="{{ route('filament.admin.pages.create-penilaian', ['alternatif_id' => $alternatif->id]) }}"
-                                    class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 text-sm font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-white bg-success-600 hover:bg-success-500 focus:bg-success-700 focus:ring-success-500 border-transparent">
+                                    class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 text-sm font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-white bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-primary-500 border-transparent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit Nilai
+                                </a>
+                                @else
+                                {{-- Tombol Beri Nilai --}}
+                                <a href="{{ route('filament.admin.pages.create-penilaian', ['alternatif_id' => $alternatif->id]) }}"
+                                    class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 text-sm font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-white bg-blue-600 hover:bg-blue-500 focus:bg-blue-700 focus:ring-blue-500 border-transparent">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     Beri Nilai
                                 </a>
-                                <a href="#"
-                                    class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 text-sm font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-white bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-primary-500 border-transparent">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Edit
-                                </a>
+                                @endif
                             </div>
                         </td>
                     </tr>
