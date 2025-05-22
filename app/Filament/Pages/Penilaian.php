@@ -65,7 +65,7 @@ class Penilaian extends Page
                         ->send();
 
                     // return redirect()->route('filament.admin.pages.promethee-result');
-                    return view('promethee.results', [
+                    return redirect()->route('filament.admin.pages.hasil-penilaian', [
                         'results' => $results,
                         'decisionMatrix' => $results['decisionMatrix'],
                         'preferenceMatrix' => $results['preferenceMatrix'],
