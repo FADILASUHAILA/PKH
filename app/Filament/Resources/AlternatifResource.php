@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AlternatifResource\Pages;
 use App\Filament\Resources\AlternatifResource\RelationManagers;
 use App\Models\Alternatif;
+use App\Models\Desa;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -24,7 +27,31 @@ class AlternatifResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('kode')
+                    ->label('Kode Alternatif')
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder('Masukkan kode alternatif')
+                    ->unique(ignoreRecord: true),
+                    
+                TextInput::make('nama')
+                    ->label('Nama Alternatif')
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder('Masukkan nama alternatif'),
+                    
+                Select::make('desa_id')
+                    ->label('Desa')
+                    ->relationship('desa', 'nama_desa')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Pilih desa')
+                    ->createOptionForm([
+                        TextInput::make('nama_desa')
+                            ->required()
+                            ->maxLength(255),
+                    ]),
             ]);
     }
 
@@ -32,15 +59,23 @@ class AlternatifResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('kode'),
-                TextColumn::make('nama'),
-                TextColumn::make('desa.nama_desa'),
+                TextColumn::make('kode')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('nama')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('desa.nama_desa')
+                    ->label('Desa')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
