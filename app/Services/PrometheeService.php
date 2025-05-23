@@ -68,7 +68,7 @@ class PrometheeService
                 //cari nilai preferensi nya
 
                 $totalPreference = 0;
-                foreach ($this->kriterias as $kriteria) {
+                foreach ($this->kriterias as $kriteria) { //Loop ganda untuk membandingkan alternatif (A vs B)
                     $nilaiA = $this->decisionMatrix[$a->id][$kriteria->id] ?? 0;
                     $nilaiB = $this->decisionMatrix[$b->id][$kriteria->id] ?? 0;
 

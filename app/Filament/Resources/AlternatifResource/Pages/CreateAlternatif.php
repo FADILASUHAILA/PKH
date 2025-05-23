@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAlternatif extends CreateRecord
 {
     protected static string $resource = AlternatifResource::class;
+
+    
 }

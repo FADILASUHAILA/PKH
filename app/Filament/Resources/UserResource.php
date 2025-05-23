@@ -34,6 +34,10 @@ class UserResource extends Resource
                             ->label('Nama Lengkap')
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Telepon')
+                            ->required()
+                            ->maxLength(255),
                         Forms\Components\TextInput::make('email')
                             ->email()
                             ->required()
@@ -56,22 +60,10 @@ class UserResource extends Resource
                             ->multiple()
                             ->preload()
                             ->searchable(),
+                        
                     ])->columns(2),
                 
-                Forms\Components\Section::make('Informasi Tambahan')
-                    ->schema([
-                        Forms\Components\TextInput::make('phone')
-                            ->label('Nomor Telepon')
-                            ->tel()
-                            ->maxLength(20),
-                        Forms\Components\Textarea::make('address')
-                            ->label('Alamat')
-                            ->columnSpanFull(),
-                        Forms\Components\FileUpload::make('avatar')
-                            ->label('Foto Profil')
-                            ->image()
-                            ->directory('user-avatars'),
-                    ])->columns(2),
+              
             ]);
     }
 
@@ -79,17 +71,14 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
-                    ->label('Foto')
-                    ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png')),
+               
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                   
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                  
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telepon')
                     ->searchable(),
