@@ -7,7 +7,7 @@ use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class HasilPenilaian extends Page
 {
-
+    use HasPageShield;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static string $view = 'filament.pages.penilaian.hasil-penilaian';

@@ -12,15 +12,21 @@ class Desa extends Model
 
     protected $fillable = 
     [
-        'nama',
+        'id',
+        'nama_desa',
     ];
 
-    public function desas()
+    public function alternatifs()
     {
-        return $this->hasMany(Desa::class);
+        return $this->hasMany(Alternatif::class);
     }
     public function penerima()
     {
     	return $this->hasOne(Penerima::class);
+    }
+
+    public function bioDatas()
+    {
+        return $this->hasManyThrough(BioData::class, Alternatif::class);
     }
 }
