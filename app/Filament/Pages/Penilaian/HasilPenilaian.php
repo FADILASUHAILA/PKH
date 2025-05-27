@@ -12,7 +12,7 @@ class HasilPenilaian extends Page
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static string $view = 'filament.pages.penilaian.hasil-penilaian';
     protected static ?string $navigationGroup = 'Perhitungan';
-    protected static ?string $title = 'Hasil Perhitungan PROMETHEE';
+    protected static ?string $title = 'Hasil Penilaian';
 
     public array $results = [];
     public array $decisionMatrix = [];

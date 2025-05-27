@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Alternatif;
+use App\Models\BioData;
 use App\Models\Penilaian as ModelsPenilaian;
 use App\Services\PrometheeService;
 use Filament\Pages\Page;
@@ -16,17 +17,18 @@ class Penilaian extends Page
 {
     use HasPageShield;
     protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
-
     protected static string $view = 'filament.pages.penilaian';
-
-    protected static ?string $navigationGroup = 'Perhitungan';
-
+    protected static ?string $title = 'Calon Penerima';
+    protected static ?string $navigationGroup = 'Master Data';
     public $alternatifs;
     public $penilaians;
+    public $bioDatas;
 
     public function mount()
     {
-        $this->alternatifs = Alternatif::all();
+        $this->alternatifs = Alternatif::with(['biodata', 'desa'])->get();
+        // atau jika ingin pagination:
+        // $this->alternatifs = Alternatif::with(['biodata', 'desa'])->paginate(10);
     }
 
     protected function getTableQuery(): Builder

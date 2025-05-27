@@ -10,11 +10,13 @@ use Filament\Pages\Page;
 use App\Models\Desa;
 use App\Models\Alternatif;
 use App\Models\BioData;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 
 class CalonPenerima extends Page
 {
+    use HasPageShield;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.calon-penerima';
 

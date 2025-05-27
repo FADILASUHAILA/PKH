@@ -17,12 +17,6 @@
             <ul class="flex flex-wrap -mb-px" id="prometheeTabs" role="tablist">
                 <li class="mr-2" role="presentation">
                     <button class="inline-block p-4 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                        id="ranking-tab" data-tabs-target="#ranking" type="button" role="tab">
-                        Ranking
-                    </button>
-                </li>
-                <li class="mr-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
                         id="matrix-tab" data-tabs-target="#matrix" type="button" role="tab">
                         Matriks Keputusan
                     </button>
@@ -61,9 +55,6 @@
                                 $alternatif = $alternatifs->firstWhere('id', $altId);
                             @endphp
                             <tr class="@if($loop->odd) bg-gray-50 dark:bg-gray-700 @endif">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $rank }}
-                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                     {{ $alternatif->nama ?? 'N/A' }}
                                 </td>
