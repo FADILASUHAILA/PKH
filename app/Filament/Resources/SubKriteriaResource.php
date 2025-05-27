@@ -16,7 +16,8 @@ class SubKriteriaResource extends Resource
 {
     protected static ?string $model = SubKriteria::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
+   protected static ?string $navigationGroup = 'Master Data';
 
     public static function form(Form $form): Form
     {

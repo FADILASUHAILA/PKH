@@ -39,7 +39,7 @@ class Penilaian extends Page
         return [Action::make('hitungPromethee')
             ->label('Hitung PROMETHEE')
             ->icon('heroicon-o-calculator')
-            ->color('success')
+            ->color('primary')
             ->action(function (PrometheeService $prometheeService) {
                 try {
                     $results = $prometheeService->calculate();

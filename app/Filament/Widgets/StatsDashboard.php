@@ -10,6 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsDashboard extends BaseWidget
 {
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected function getStats(): array
     {
         $countKriteria = Kriteria::count();
@@ -23,7 +24,7 @@ class StatsDashboard extends BaseWidget
                 ->color('primary')
                 ->chart([7, 2, 10, 3, 15, 4, 17])
                 ->extraAttributes([
-                    'class' => 'cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 border border-blue-200 dark:border-blue-700 rounded-lg',
+                    'class' => 'cursor-pointer hover:shadow-lg transition-shadow bg-primary-to-r from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 border border-blue-200 dark:border-blue-700 rounded-lg',
                 ]),
                 
             Stat::make('Jumlah Alternatif', $countAlternatif)

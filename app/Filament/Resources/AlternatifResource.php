@@ -20,8 +20,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AlternatifResource extends Resource
 {
     protected static ?string $model = Alternatif::class;
-
+    protected static ?string $navigationGroup = 'Master Data';
+      protected static ?int $navigationSort = 1; // Ini yang mengatur urutan dalam grup
+    
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
+
+    
+
 
     public static function form(Form $form): Form
     {
