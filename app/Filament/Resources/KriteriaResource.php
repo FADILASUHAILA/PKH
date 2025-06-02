@@ -51,7 +51,7 @@ class KriteriaResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                
                 
             ])
             ->bulkActions([
@@ -60,6 +60,16 @@ class KriteriaResource extends Resource
                 ]),
             ]);
     }
+
+
+
+
+
+
+
+
+
+    
     
     public static function getRelations(): array
     {
@@ -67,6 +77,8 @@ class KriteriaResource extends Resource
             //
         ];
     }
+
+    
 
     public static function getPages(): array
     {

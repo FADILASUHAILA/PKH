@@ -31,5 +31,8 @@ class Kriteria extends Model
         return $this->belongsTo(Alternatif::class, 'alternatif_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda
     }
 
+
+    
+
     
 }

@@ -26,6 +26,7 @@ class ListSubKriterias extends Page
         return 'Data Sub-Kriteria';
     }
 
+
     public function getKriterias()
     {
         return Kriteria::with('subKriterias')->get(); // Pastikan relasi sudah didefinisikan

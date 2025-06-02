@@ -4,7 +4,7 @@
         <!-- Card Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div>
-                <p class="text-sm text-gray-500 mt-1">Kelola Data Calon bantuan sosial</p>
+                <p class="text-sm text-gray-500 mt-1">Penilaian Calon Penerima</p>
             </div>
             <div class="flex space-x-3">
                 <!-- <a href="#" class="inline-flex items-center px-4 py-2 bg-primary-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-700 focus:bg-primary-700 active:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -39,13 +39,6 @@
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                        {{ strtoupper(substr($alternatif->nama, 0, 1)) }}
-                                    </div>
-                                </div>
-                                <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $alternatif->nama }}</div>
                                 </div>
                             </div>

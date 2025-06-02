@@ -34,7 +34,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="px-6 py-3 text-right">
+
+                <div class="flex items-center space-x-2">
                     <x-filament::button
                         icon="heroicon-o-plus"
                         tag="a"
@@ -42,46 +43,54 @@
                         size="xs">
                         Tambah Sub-Kriteria
                     </x-filament::button>
+
+                    <!-- Tombol Hapus Kriteria -->
+                    <form
+                        action=""
+                        method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <x-filament::button
+                            icon="heroicon-o-trash"
+                            color="danger"
+                            size="xs"
+                            type="submit"
+                            tooltip="Hapus Kriteria">
+                            Hapus
+                        </x-filament::button>
+                    </form>
                 </div>
             </div>
+
+
+           
+
+
 
             <!-- Subkriteria Table -->
             <div class="overflow-x-auto">
                 <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-8">
-                                No
-                            </th>
-
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 450px">
-                                Sub Kriteria
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Nilai
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Aksi
-                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-8">No</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider" style="width: 450px">Sub Kriteria</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nilai</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($kriteria->subKriterias as $sub)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ $loop->iteration }}
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $sub->nama_sub_kriteria }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $sub->nama_sub_kriteria }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
                                 <span class="py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                                     {{ $sub->nilai }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td class="px-6 py-4 text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">
                                     <x-filament::button
                                         icon="heroicon-o-pencil"
@@ -89,8 +98,7 @@
                                         tag="a"
                                         href="{{ route('filament.admin.resources.sub-kriterias.edit', $sub) }}"
                                         size="xs"
-                                        outlined>
-                                    </x-filament::button>
+                                        outlined />
                                     <form action="" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -100,8 +108,7 @@
                                             size="xs"
                                             outlined
                                             type="submit"
-                                            onclick="return confirm('Hapus subkriteria ini?')">
-                                        </x-filament::button>
+                                            onclick="return confirm('Hapus subkriteria ini?')" />
                                     </form>
                                 </div>
                             </td>
@@ -111,7 +118,7 @@
                             <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                 <div class="flex flex-col items-center justify-center py-8">
                                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Tidak ada subkriteria</h3>
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Tambahkan subkriteria untuk kriteria ini</p>
@@ -129,7 +136,7 @@
         @if($kriterias->isEmpty())
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
             <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Belum ada kriteria</h3>
             <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Mulai dengan membuat kriteria baru untuk sistem penilaian Anda.</p>
