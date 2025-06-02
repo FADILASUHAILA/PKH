@@ -15,7 +15,6 @@ class Kriteria extends Model
         'kode',
         'nama_kriteria',
         'bobot',
-        'alternatif_id'
     ];
 
     public function subkriterias()
@@ -25,10 +24,6 @@ class Kriteria extends Model
     public function penilaians()
     {
         return $this->hasMany(Penilaian::class);
-    }
-    public function alternatif()
-    {
-        return $this->belongsTo(Alternatif::class, 'alternatif_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda
     }
 
 

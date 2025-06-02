@@ -6,6 +6,7 @@ use App\Models\Alternatif;
 use Filament\Pages\Page;
 use App\Models\Penilaian;
 use App\Models\Kriteria;
+use App\Services\PrometheeService;
 use Illuminate\Support\Facades\Route;
 
 class CreatePenilaian extends Page
@@ -20,7 +21,7 @@ class CreatePenilaian extends Page
     {
         return false;
     }
-    
+
     public static function getRoutes(): array
     {
         return [
@@ -42,7 +43,7 @@ class CreatePenilaian extends Page
 
         // Load existing penilaian if any
         $existingPenilaian = Penilaian::where('alternatif_id', $this->alternatif_id->id)->get();
-        
+
         foreach ($existingPenilaian as $penilaian) {
             $this->kriteria[$penilaian->kriteria_id] = $penilaian->subkriteria_id;
             $this->existingPenilaian[$penilaian->kriteria_id] = $penilaian->id;
@@ -63,7 +64,7 @@ class CreatePenilaian extends Page
         // Validasi semua kriteria harus diisi
         $validationRules = [];
         foreach ($this->allKriterias as $kriteria) {
-            $validationRules['kriteria.'.$kriteria->id] = 'required|exists:sub_kriterias,id';
+            $validationRules['kriteria.' . $kriteria->id] = 'required|exists:sub_kriterias,id';
         }
 
         $this->validate($validationRules, [
@@ -91,6 +92,22 @@ class CreatePenilaian extends Page
                     'subkriteria_id' => $subkriteriaId,
                     'nilai' => $subkriteria->nilai
                 ]);
+
+                // Panggil PrometheeService setelah semua data disimpan
+                $prometheeService = new \App\Services\PrometheeService();
+                $results = $prometheeService->calculate();
+
+                // Simpan hasil perhitungan PROMETHEE
+                foreach ($results['alternatif_ids'] as $alternatifId) {
+                    \App\Models\HasilPenilaian::where('alternatif_id', $alternatifId)
+                        ->create([
+                            'alternatif_id' => $alternatifId,
+                            'leaving_flow' => $results['leavingFlow'][$alternatifId],
+                            'entering_flow' => $results['enteringFlow'][$alternatifId],
+                            'net_flow' => $results['netFlow'][$alternatifId],
+                            'ranking' => $results['ranking'][$alternatifId]
+                        ]);
+                }
             }
         }
 

@@ -2,27 +2,42 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HasilPenilaian extends Model
 {
-      protected $fillable =
-    [
-        'kriteria_id',
+    use HasFactory;
+
+    protected $table = 'hasil_penilaian';
+
+    protected $fillable = [
         'alternatif_id',
+        'leaving_flow',
+        'entering_flow',
+        'net_flow',
+        'ranking'
     ];
 
+    protected $casts = [
+        'leaving_flow' => 'decimal:6',
+        'entering_flow' => 'decimal:6',
+        'net_flow' => 'decimal:6',
+    ];
 
-public function alternatif()
+    public function alternatif()
     {
-        return $this->belongsTo(Alternatif::class, 'alternatif_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda
+        return $this->belongsTo(Alternatif::class);
     }
-  
-    public function kriteria()
+
+    // Scope untuk query yang sering digunakan
+    public function scopeOrderByRanking($query)
     {
-        return $this->belongsTo(Alternatif::class, 'kriteria_id'); // Sesuaikan dengan nama kolom foreign key jika berbeda
+        return $query->orderBy('ranking');
     }
 
-
-
+    public function scopeWithAlternatif($query)
+    {
+        return $query->with('alternatif');
+    }
 }

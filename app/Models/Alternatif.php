@@ -29,6 +29,11 @@ class Alternatif extends Model
     {
         return $this->hasMany(Penilaian::class, 'alternatif_id');
     }
+
+    public function hasilPenilaian(): HasMany
+    {
+        return $this->hasMany(HasilPenilaian::class, 'alternatif_id');
+    }
     
     public function desa(): BelongsTo
     {

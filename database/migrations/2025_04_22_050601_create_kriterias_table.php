@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('kode');
             $table->string('nama_kriteria');
             $table->integer('bobot');
-            $table->foreignId('alternatif_id')->constrained()->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

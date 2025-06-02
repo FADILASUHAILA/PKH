@@ -22,68 +22,57 @@ class KriteriaSeeder extends Seeder
                 'kode' => 'K1',
                 'nama_kriteria' => 'Penghasilan',
                 'bobot' => 25,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K2',
                 'nama_kriteria' => 'Pekerjaan',
                 'bobot' => 10,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K3',
                 'nama_kriteria' => 'Jumlah Tanggungan',
                 'bobot' => 15,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K4',
                 'nama_kriteria' => 'Jumlah Anak Sekolah',
                 'bobot' => 10,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K5',
                 'nama_kriteria' => 'Ibu Hamil',
                 'bobot' => 10,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K6',
                 'nama_kriteria' => 'Balita (0-6 tahun)',
                 'bobot' => 5,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K7',
                 'nama_kriteria' => 'Anggota Disabilitas',
                 'bobot' => 10,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
 
             [
                 'kode' => 'K8',
                 'nama_kriteria' => 'Lansia (> 60 tahun)',
                 'bobot' => 5,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K9',
                 'nama_kriteria' => 'Luas Lantai',
                 'bobot' => 3,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K10',
                 'nama_kriteria' => 'Jenis Lantai',
                 'bobot' => 3,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ],
             [
                 'kode' => 'K11',
                 'nama_kriteria' => 'Jenis Dinding',
                 'bobot' => 4,
-                'alternatif_id' => Alternatif::inRandomOrder()->first()->id,
             ]
 
         ];

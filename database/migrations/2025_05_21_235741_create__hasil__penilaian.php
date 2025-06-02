@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('_hasil__penilaian', function (Blueprint $table) {
+        Schema::create('hasil_penilaian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alternatif_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('kriteria_id')->constrained()->cascadeOnDelete();
-            $table->string('nilai');
+            $table->foreignId('alternatif_id')->constrained('alternatifs')->onDelete('cascade');
+            $table->decimal('leaving_flow', 10, 6)->comment('Phi+ (Leaving Flow)');
+            $table->decimal('entering_flow', 10, 6)->comment('Phi- (Entering Flow)');
+            $table->decimal('net_flow', 10, 6)->comment('Phi (Net Flow)');
+            $table->unsignedInteger('ranking');
             $table->timestamps();
+            
+            // Index untuk pencarian cepat
+            $table->index('alternatif_id');
+            $table->index('ranking');
         });
     }
 
@@ -25,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('_hasil__penilaian');
+        Schema::dropIfExists('hasil_penilaian');
     }
 };
