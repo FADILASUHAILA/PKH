@@ -12,7 +12,10 @@ class HasilPenilaian extends Model
     protected $table = 'hasil_penilaian';
 
     protected $fillable = [
+        'penilaian_id',
         'alternatif_id',
+        'decision_matrix',
+        'preference_matrix',
         'leaving_flow',
         'entering_flow',
         'net_flow',
@@ -20,24 +23,43 @@ class HasilPenilaian extends Model
     ];
 
     protected $casts = [
-        'leaving_flow' => 'decimal:6',
-        'entering_flow' => 'decimal:6',
-        'net_flow' => 'decimal:6',
+        'decision_matrix' => 'array',
+        'preference_matrix' => 'array',
+        'leaving_flow' => 'float',
+        'entering_flow' => 'float',
+        'net_flow' => 'float',
     ];
+
+    // Relationships
+    public function penilaian()
+    {
+        return $this->belongsTo(Penilaian::class);
+    }
 
     public function alternatif()
     {
         return $this->belongsTo(Alternatif::class);
     }
 
-    // Scope untuk query yang sering digunakan
-    public function scopeOrderByRanking($query)
+    public function kriteria()
+    {
+        return $this->belongsTo(Kriteria::class);
+    }
+
+    // Scopes
+    public function scopeByRanking($query)
     {
         return $query->orderBy('ranking');
     }
 
-    public function scopeWithAlternatif($query)
+    public function scopeForPenilaian($query, $penilaianId)
     {
-        return $query->with('alternatif');
+        return $query->where('penilaian_id', $penilaianId);
+    }
+
+    // Accessors
+    public function getFormattedNetFlowAttribute()
+    {
+        return number_format($this->net_flow, 6);
     }
 }

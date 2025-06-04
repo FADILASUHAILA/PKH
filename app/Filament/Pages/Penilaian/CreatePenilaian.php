@@ -26,6 +26,10 @@ class CreatePenilaian extends Page
     {
         return [
             Route::post('/store', [static::class, 'store'])->name('penilaian.store'),
+            Route::get('/{alternatif_id}/{penilaian_id?}', [static::class, 'mount'])
+                ->name('create'),
+            Route::post('/store', [static::class, 'store'])
+                ->name('penilaian.store'),
         ];
     }
 
@@ -35,10 +39,12 @@ class CreatePenilaian extends Page
     public $kriteria = [];
     public $existingPenilaian = [];
     public $allKriterias;
+    public $penilaian_id;
 
     public function mount()
     {
         $this->alternatif_id = Alternatif::findOrFail(request('alternatif_id'));
+        $this->penilaian_id = request('penilaian_id');
         $this->allKriterias = Kriteria::with('subkriterias')->get();
 
         // Load existing penilaian if any
@@ -72,47 +78,74 @@ class CreatePenilaian extends Page
             'kriteria.*.exists' => 'Sub kriteria yang dipilih tidak valid'
         ]);
 
-        // Proses penyimpanan data
+        // Simpan penilaian utama terlebih dahulu (jika diperlukan)
+        $penilaianUtama = \App\Models\Penilaian::create([
+            'alternatif_id' => $this->alternatif_id->id,
+            'kriteria_id' => 1, // ID kriteria default atau sesuaikan
+            'subkriteria_id' => 1, // ID subkriteria default atau sesuaikan
+            'nilai' => 0, // Nilai default
+            'penilaian_id' => 0, // Nilai default
+        ]);
+
+        // Simpan detail penilaian
         foreach ($this->allKriterias as $kriteria) {
             $subkriteriaId = $this->kriteria[$kriteria->id];
             $subkriteria = \App\Models\SubKriteria::findOrFail($subkriteriaId);
 
-            if (isset($this->existingPenilaian[$kriteria->id])) {
-                // Update existing penilaian
-                Penilaian::where('id', $this->existingPenilaian[$kriteria->id])
-                    ->update([
-                        'subkriteria_id' => $subkriteriaId,
-                        'nilai' => $subkriteria->nilai
-                    ]);
-            } else {
-                // Create new penilaian
-                Penilaian::create([
+            Penilaian::updateOrCreate(
+                [
                     'alternatif_id' => $this->alternatif_id->id,
                     'kriteria_id' => $kriteria->id,
+                    'penilaian_id' => $penilaianUtama->id
+                ],
+                [
                     'subkriteria_id' => $subkriteriaId,
                     'nilai' => $subkriteria->nilai
-                ]);
+                ]
+            );
+        }
 
-                // Panggil PrometheeService setelah semua data disimpan
-                $prometheeService = new \App\Services\PrometheeService();
-                $results = $prometheeService->calculate();
+        // Panggil PrometheeService setelah semua data disimpan
+        $prometheeService = new \App\Services\PrometheeService();
+        $results = $prometheeService->calculate();
 
-                // Simpan hasil perhitungan PROMETHEE
-                foreach ($results['alternatif_ids'] as $alternatifId) {
-                    \App\Models\HasilPenilaian::where('alternatif_id', $alternatifId)
-                        ->create([
-                            'alternatif_id' => $alternatifId,
-                            'leaving_flow' => $results['leavingFlow'][$alternatifId],
-                            'entering_flow' => $results['enteringFlow'][$alternatifId],
-                            'net_flow' => $results['netFlow'][$alternatifId],
-                            'ranking' => $results['ranking'][$alternatifId]
-                        ]);
-                }
-            }
+        // Simpan hasil perhitungan PROMETHEE
+        foreach ($results['alternatif_ids'] as $index => $alternatifId) {
+            \App\Models\HasilPenilaian::updateOrCreate(
+                [
+                    'alternatif_id' => $alternatifId,
+                    'penilaian_id' => $penilaianUtama->id
+                ],
+                [
+                    'decision_matrix' => $results['decisionMatrix'][$alternatifId] ?? null,
+                    'preference_matrix' => $this->transformPreferenceMatrix($results['preferenceMatrix'], $alternatifId),
+                    'leaving_flow' => $results['leavingFlow'][$alternatifId] ?? 0,
+                    'entering_flow' => $results['enteringFlow'][$alternatifId] ?? 0,
+                    'net_flow' => $results['netFlow'][$alternatifId] ?? 0,
+                    'ranking' => $results['ranking'][$alternatifId] ?? 0,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            );
         }
 
         return redirect()->route('filament.admin.pages.penilaian')
             ->with('success', 'Penilaian berhasil disimpan!');
+    }
+
+    /**
+     * Helper method to transform preference matrix for specific alternatif
+     */
+    private function transformPreferenceMatrix(array $preferenceMatrix, int $alternatifId): array
+    {
+        $result = [];
+        foreach ($preferenceMatrix as $rowKey => $row) {
+            if ($rowKey == $alternatifId) {
+                $result = $row;
+                break;
+            }
+        }
+        return $result;
     }
 
     public function isComplete()

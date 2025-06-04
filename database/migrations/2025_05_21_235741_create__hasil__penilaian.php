@@ -13,16 +13,19 @@ return new class extends Migration
     {
         Schema::create('hasil_penilaian', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('penilaian_id')->constrained('penilaians')->onDelete('cascade');
             $table->foreignId('alternatif_id')->constrained('alternatifs')->onDelete('cascade');
+            $table->json('decision_matrix')->comment('Matriks keputusan');
+            $table->json('preference_matrix')->comment('Matriks preferensi');
             $table->decimal('leaving_flow', 10, 6)->comment('Phi+ (Leaving Flow)');
             $table->decimal('entering_flow', 10, 6)->comment('Phi- (Entering Flow)');
             $table->decimal('net_flow', 10, 6)->comment('Phi (Net Flow)');
             $table->unsignedInteger('ranking');
             $table->timestamps();
             
-            // Index untuk pencarian cepat
-            $table->index('alternatif_id');
-            $table->index('ranking');
+            // Composite index for better query performance
+            $table->index(['penilaian_id', 'alternatif_id']);
+            $table->index(['penilaian_id', 'ranking']);
         });
     }
 

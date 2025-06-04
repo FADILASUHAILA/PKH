@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('penilaians', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alternatif_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('kriteria_id')->constrained()->cascadeOnDelete();
-            $table->string('nilai');
+            $table->foreignId('alternatif_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('kriteria_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('nilai')->nullable();
+            $table->integer('penilaian_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

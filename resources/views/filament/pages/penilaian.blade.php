@@ -34,7 +34,7 @@
                     @php
                     // Hitung jumlah kriteria yang sudah dinilai untuk alternatif ini
                     $jumlahKriteria = \App\Models\Kriteria::count();
-                    $jumlahPenilaian = $alternatif->penilaian()->count();
+                    $jumlahPenilaian = $alternatif->penilaian()->count() - 1;
                     $sudahDinilai = $jumlahPenilaian === $jumlahKriteria;
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
@@ -80,7 +80,7 @@
                             <div class="flex justify-end gap-2">
                                 @if($sudahDinilai)
                                 {{-- Tombol Edit --}}
-                                <a href="{{ route('filament.admin.pages.create-penilaian', ['alternatif_id' => $alternatif->id]) }}"
+                                <a href="{{ route('filament.admin.pages.create-penilaian', ['alternatif_id' => $alternatif->id, 'penilaian_id' => $alternatif->penilaian->first()?->penilaian_id]) }}"
                                     class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 text-sm font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-white bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-primary-500 border-transparent">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -89,7 +89,7 @@
                                 </a>
                                 @else
                                 {{-- Tombol Beri Nilai --}}
-                                <a href="{{ route('filament.admin.pages.create-penilaian', ['alternatif_id' => $alternatif->id]) }}"
+                                <a href="{{ route('filament.admin.pages.create-penilaian', ['alternatif_id' => $alternatif->id, 'penilaian_id' => $alternatif->penilaian->first()?->penilaian_id]) }}"
                                     class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 text-sm font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-white bg-blue-600 hover:bg-blue-500 focus:bg-blue-700 focus:ring-blue-500 border-transparent">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

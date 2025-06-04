@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Penilaian;
 
 use Filament\Pages\Page;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Illuminate\Contracts\Support\Htmlable;
 
 class HasilPenilaian extends Page
 {
@@ -12,7 +13,10 @@ class HasilPenilaian extends Page
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static string $view = 'filament.pages.penilaian.hasil-penilaian';
     protected static ?string $navigationGroup = 'Perhitungan';
-    protected static ?string $title = 'Hasil Penilaian';
+    public function getTitle(): string | Htmlable
+    {
+        return __('');
+    }
 
     public array $results = [];
     public array $decisionMatrix = [];
@@ -23,9 +27,17 @@ class HasilPenilaian extends Page
     public array $ranking = [];
     public $alternatifs;
     public $kriterias;
+    public $hasilPenilaian;
 
     public function mount(): void
     {
+        // Ambil data dari database
+        $this->hasilPenilaian = \App\Models\HasilPenilaian::with(['alternatif', 'penilaian'])
+            ->latest()
+            ->get()
+            ->groupBy('penilaian_id')
+            ->first(); // Ambil hasil penilaian terbaru
+
         if ($results = request('results')) {
             $results = json_decode($results, true);
 

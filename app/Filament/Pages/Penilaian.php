@@ -48,18 +48,18 @@ class Penilaian extends Page
                     dd($results);
 
                     // Simpan hasil ke database jika diperlukan
-                    foreach ($results as $result) {
-                        // Contoh penyimpanan hasil
-                        $resultModel = \App\Models\Penilaian::updateOrCreate(
-                            ['alternatif_id' => $result['alternatif']->id],
-                            [
-                                'leaving_flow' => $result['leaving'],
-                                'entering_flow' => $result['entering'],
-                                'net_flow' => $result['net'],
-                                'ranking' => array_search($result, $results) + 1
-                            ]
-                        );
-                    }
+                    // foreach ($results as $result) {
+                    //     // Contoh penyimpanan hasil
+                    //     $resultModel = \App\Models\Penilaian::updateOrCreate(
+                    //         ['alternatif_id' => $result['alternatif']->id],
+                    //         [
+                    //             'leaving_flow' => $result['leaving'],
+                    //             'entering_flow' => $result['entering'],
+                    //             'net_flow' => $result['net'],
+                    //             'ranking' => array_search($result, $results) + 1
+                    //         ]
+                    //     );
+                    // }
 
                     Notification::make()
                         ->title('Perhitungan PROMETHEE Berhasil')

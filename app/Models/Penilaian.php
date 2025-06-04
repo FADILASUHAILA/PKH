@@ -18,9 +18,13 @@ class Penilaian extends Model
         'kriteria_id',
         'subkriteria_id',
         'nilai',
-
-
+        'penilaian_id'
     ];
+
+    public function hasilPenilaian()
+    {
+        return $this->hasMany(HasilPenilaian::class);
+    }
     public function kriteria()
     {
         return $this->belongsTo(Kriteria::class);
