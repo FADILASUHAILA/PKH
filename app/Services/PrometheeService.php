@@ -21,6 +21,10 @@ class PrometheeService
     public function calculate()
     {
         $this->loadData();
+        if ($this->alternatifs->count() < 2) {
+            session()->flash('error', 'PROMETHEE membutuhkan minimal 2 alternatif yang dinilai!');
+            return null; // Menghentikan 
+        }
         $this->normalizeWeights();
         $this->buildDecisionMatrix();
         $this->calculatePreferenceMatrix();
@@ -32,7 +36,7 @@ class PrometheeService
 
     private function loadData()
     {
-        $this->alternatifs = Alternatif::with('penilaian')->get();
+        $this->alternatifs = Alternatif::has('penilaian')->with('penilaian')->get();
         $this->kriterias = Kriteria::all();
     }
 
@@ -119,12 +123,12 @@ class PrometheeService
 
     private function calculateRanking()
     {
-        $sorted = $this->netFlow;
-        arsort($sorted);
+        $validNetFlows = array_filter($this->netFlow, fn($value) => !is_null($value));
+        arsort($validNetFlows);
 
         $this->ranking = [];
         $rank = 1;
-        foreach ($sorted as $altId => $value) {
+        foreach ($validNetFlows as $altId => $value) {
             $this->ranking[$altId] = $rank++;
         }
     }

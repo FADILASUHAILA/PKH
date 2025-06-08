@@ -11,6 +11,11 @@
             <div>
                 <p class="text-sm text-gray-500 mt-1">Data Hasil Perangkingan dari Hasil Perhitungan menggunakan Metode Promethee</p>
             </div>
+            <div>
+                <a href="{{ route('hasil-perangkingan.pdf') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150">
+                    Download PDF
+                </a>
+            </div>
         </div>
 
 
@@ -19,20 +24,17 @@
             <table class="w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($rankingData as $item)
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item['ranking'] }}</div>
-                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
                         </td>
@@ -49,6 +51,9 @@
                             <div class="flex justify-end gap-2">
                                 <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
                             </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $item['ranking'] }}</div>
                         </td>
                     </tr>
                     @endforeach
@@ -69,7 +74,7 @@
                 </button>
             </div>
         </div>
-    
+
 
     </div>
 

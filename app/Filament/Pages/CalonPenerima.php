@@ -95,10 +95,10 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
-                TextColumn::make('kode')
-                    ->label('Kode')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('kode')
+                //     ->label('Kode')
+                //     ->searchable()
+                //     ->sortable(),
 
                 TextColumn::make('bioData.nik')
                     ->label('NIK')

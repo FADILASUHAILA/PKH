@@ -28,6 +28,10 @@ class HasilPenilaian extends Page
     public $alternatifs;
     public $kriterias;
     public $hasilPenilaian;
+    public function scopeOnlyEvaluated($query)
+    {
+        return $query->whereNotNull('net_flow');
+    }
 
     public function mount(): void
     {
@@ -52,6 +56,7 @@ class HasilPenilaian extends Page
             // Load models fresh from database
             $this->alternatifs = \App\Models\Alternatif::findMany($results['alternatif_ids'] ?? []);
             $this->kriterias = \App\Models\Kriteria::findMany($results['kriteria_ids'] ?? []);
+            // $this->ranking = HasilPenilaian::onlyEvaluated()->byRanking()->get();
 
             // dd($this->decisionMatrix);
         }

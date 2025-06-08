@@ -5,6 +5,8 @@ namespace App\Filament\Pages;
 use App\Models\HasilPenilaian;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class HasilPerangkingan extends Page
 {
@@ -42,6 +44,9 @@ class HasilPerangkingan extends Page
                     'ranking' => $item->ranking
                 ];
             });
+
+            // Simpan rankingData ke session
+            session(['rankingData' => $this->rankingData]);
         }
     }
 
@@ -96,5 +101,24 @@ class HasilPerangkingan extends Page
             'colors' => $colors,
             'niks' => $niks
         ];
+    }
+
+    public function downloadPdf()
+    {
+        $options = new Options();
+        $options->set('defaultFont', 'Courier');
+        $dompdf = new Dompdf($options);
+        // Ambil data dari session
+        $rankingData = session('rankingData');
+        if (!$rankingData) {
+            return abort(404, 'Data tidak ditemukan');
+        }
+        $html = view('filament.pages.pdf-hasil-perangkingan', [
+            'rankingData' => $rankingData
+        ])->render();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'potrait');
+        $dompdf->render();
+        $dompdf->stream('hasil_perangkingan.pdf');
     }
 }
