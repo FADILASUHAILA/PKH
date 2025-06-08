@@ -34,7 +34,7 @@
                     @php
                     // Hitung jumlah kriteria yang sudah dinilai untuk alternatif ini
                     $jumlahKriteria = \App\Models\Kriteria::count();
-                    $jumlahPenilaian = $alternatif->penilaian()->count() - 1;
+                    $jumlahPenilaian = $alternatif->penilaian()->count();
                     $sudahDinilai = $jumlahPenilaian === $jumlahKriteria;
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors duration-150">

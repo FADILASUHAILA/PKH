@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('hasil_penilaian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('penilaian_id')->constrained('penilaians')->onDelete('cascade');
+            $table->foreignId('header_id')->constrained('penilaians')->onDelete('cascade');
             $table->foreignId('alternatif_id')->constrained('alternatifs')->onDelete('cascade');
             $table->json('decision_matrix')->comment('Matriks keputusan');
             $table->json('preference_matrix')->comment('Matriks preferensi');
@@ -24,8 +24,8 @@ return new class extends Migration
             $table->timestamps();
             
             // Composite index for better query performance
-            $table->index(['penilaian_id', 'alternatif_id']);
-            $table->index(['penilaian_id', 'ranking']);
+            // $table->index(['header_id', 'alternatif_id']);
+            // $table->index(['header_id', 'ranking']);
         });
     }
 

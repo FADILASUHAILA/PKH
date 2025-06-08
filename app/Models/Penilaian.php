@@ -18,7 +18,6 @@ class Penilaian extends Model
         'kriteria_id',
         'subkriteria_id',
         'nilai',
-        'penilaian_id'
     ];
 
     public function hasilPenilaian()
@@ -38,5 +37,9 @@ class Penilaian extends Model
     public function subkriteria()
     {
         return $this->belongsTo(SubKriteria::class);
+    }
+    public function header()
+    {
+        return $this->belongsTo(PenilaianHeader::class);
     }
 }

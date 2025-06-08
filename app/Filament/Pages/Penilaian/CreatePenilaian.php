@@ -78,29 +78,37 @@ class CreatePenilaian extends Page
             'kriteria.*.exists' => 'Sub kriteria yang dipilih tidak valid'
         ]);
 
-        // Simpan penilaian utama terlebih dahulu (jika diperlukan)
-        $penilaianUtama = \App\Models\Penilaian::create([
-            'alternatif_id' => $this->alternatif_id->id,
-            'kriteria_id' => 1, // ID kriteria default atau sesuaikan
-            'subkriteria_id' => 1, // ID subkriteria default atau sesuaikan
-            'nilai' => 0, // Nilai default
-            'penilaian_id' => 0, // Nilai default
-        ]);
+        // Buat header penilaian
+        $header = \App\Models\PenilaianHeader::updateOrCreate(
+            [
+                'alternatif_id' => $this->alternatif_id->id,
+                // Hanya gunakan alternatif_id sebagai kondisi unik
+                // Jika ingin satu alternatif hanya punya satu header
+            ],
+            [
+                'tanggal_penilaian' => now(),
+                'catatan' => null,
+                'updated_at' => now()
+            ]
+        );
 
         // Simpan detail penilaian
         foreach ($this->allKriterias as $kriteria) {
             $subkriteriaId = $this->kriteria[$kriteria->id];
             $subkriteria = \App\Models\SubKriteria::findOrFail($subkriteriaId);
 
-            Penilaian::updateOrCreate(
+            \App\Models\Penilaian::updateOrCreate(
                 [
                     'alternatif_id' => $this->alternatif_id->id,
-                    'kriteria_id' => $kriteria->id,
-                    'penilaian_id' => $penilaianUtama->id
+                    // 'header_id' => $header->id,
+                    'kriteria_id' => $kriteria->id
                 ],
                 [
                     'subkriteria_id' => $subkriteriaId,
-                    'nilai' => $subkriteria->nilai
+                    'nilai' => $subkriteria->nilai,
+                    'deleted_at' => null,
+                    'created_at' => now(),
+                    'updated_at' => now()
                 ]
             );
         }
@@ -109,24 +117,31 @@ class CreatePenilaian extends Page
         $prometheeService = new \App\Services\PrometheeService();
         $results = $prometheeService->calculate();
 
-        // Simpan hasil perhitungan PROMETHEE
+        // Simpan hasil perhitungan PROMETHEE hanya untuk alternatif yang sudah dinilai
         foreach ($results['alternatif_ids'] as $index => $alternatifId) {
-            \App\Models\HasilPenilaian::updateOrCreate(
-                [
-                    'alternatif_id' => $alternatifId,
-                    'penilaian_id' => $penilaianUtama->id
-                ],
-                [
-                    'decision_matrix' => $results['decisionMatrix'][$alternatifId] ?? null,
-                    'preference_matrix' => $this->transformPreferenceMatrix($results['preferenceMatrix'], $alternatifId),
-                    'leaving_flow' => $results['leavingFlow'][$alternatifId] ?? 0,
-                    'entering_flow' => $results['enteringFlow'][$alternatifId] ?? 0,
-                    'net_flow' => $results['netFlow'][$alternatifId] ?? 0,
-                    'ranking' => $results['ranking'][$alternatifId] ?? 0,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]
-            );
+            // Cek apakah alternatif sudah memiliki penilaian lengkap
+            $jumlahKriteria = \App\Models\Kriteria::count();
+            $jumlahPenilaian = \App\Models\Penilaian::where('alternatif_id', $alternatifId)
+                // ->where('header_id', $header->id)
+                ->count();
+
+            if ($jumlahPenilaian === $jumlahKriteria) {
+                \App\Models\HasilPenilaian::updateOrCreate(
+                    [
+                        'alternatif_id' => $alternatifId
+                    ],
+                    [
+                        'header_id' => $header->id,
+                        'decision_matrix' => $results['decisionMatrix'][$alternatifId] ?? null,
+                        'preference_matrix' => $this->transformPreferenceMatrix($results['preferenceMatrix'], $alternatifId),
+                        'leaving_flow' => $results['leavingFlow'][$alternatifId] ?? 0,
+                        'entering_flow' => $results['enteringFlow'][$alternatifId] ?? 0,
+                        'net_flow' => $results['netFlow'][$alternatifId] ?? 0,
+                        'ranking' => $results['ranking'][$alternatifId] ?? 0,
+                        'updated_at' => now()
+                    ]
+                );
+            }
         }
 
         return redirect()->route('filament.admin.pages.penilaian')

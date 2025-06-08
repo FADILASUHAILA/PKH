@@ -1,4 +1,9 @@
 <x-filament::page>
+    @if(!$rankingData)
+    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <span class="font-medium">Belum ada data perangkingan. Silahkan lakukan perhitungan PROMETHEE terlebih dahulu.</span>
+    </div>
+    @else
     <!-- Modern Card with Header Actions -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
         <!-- Card Header -->
@@ -8,6 +13,7 @@
             </div>
         </div>
 
+
         <!-- Table Container -->
         <div class="overflow-x-auto">
             <table class="w-full divide-y divide-gray-200">
@@ -15,6 +21,9 @@
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
                     </tr>
                 </thead>
@@ -27,6 +36,15 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $item['nik'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $item['alamat'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex justify-end gap-2">
                                 <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
@@ -37,7 +55,6 @@
                 </tbody>
             </table>
         </div>
-
         <!-- Card Footer with Pagination -->
         <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
             <div class="text-sm text-gray-500">
@@ -52,6 +69,8 @@
                 </button>
             </div>
         </div>
+    
+
     </div>
 
     <!-- Chart Card -->
@@ -75,9 +94,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('rankingChart').getContext('2d');
-            
+
             const chartData = @json($chartData);
-            
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -190,4 +209,5 @@
             });
         });
     </script>
+    @endif
 </x-filament::page>

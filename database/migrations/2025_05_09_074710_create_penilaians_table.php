@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('alternatif_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('kriteria_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('nilai')->nullable();
-            $table->integer('penilaian_id')->nullable();
+            // $table->integer('penilaian_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

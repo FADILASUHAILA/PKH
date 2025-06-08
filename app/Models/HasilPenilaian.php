@@ -12,14 +12,14 @@ class HasilPenilaian extends Model
     protected $table = 'hasil_penilaian';
 
     protected $fillable = [
-        'penilaian_id',
         'alternatif_id',
         'decision_matrix',
         'preference_matrix',
         'leaving_flow',
         'entering_flow',
         'net_flow',
-        'ranking'
+        'ranking',
+        'header_id'
     ];
 
     protected $casts = [
