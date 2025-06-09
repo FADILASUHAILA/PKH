@@ -36,6 +36,11 @@
         <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Tidak ada data hasil perhitungan. Silahkan lakukan perhitungan PROMETHEE terlebih dahulu.
         </p>
+        @if(session('error'))
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium">{{ session('error') }}</span>
+        </div>
+        @endif
     </div>
     @else
     <div class="space-y-6">
@@ -229,7 +234,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Net Flow Tab -->
             <div id="content-net-flow" class="tab-content hidden">
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">

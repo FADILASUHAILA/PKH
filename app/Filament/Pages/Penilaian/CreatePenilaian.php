@@ -117,6 +117,12 @@ class CreatePenilaian extends Page
         $prometheeService = new \App\Services\PrometheeService();
         $results = $prometheeService->calculate();
 
+        if (is_null($results)) {
+            // Tangani kasus di mana hasilnya null
+            return redirect()->route('filament.admin.pages.penilaian')
+                ->with('error', 'PROMETHEE membutuhkan minimal 2 Calon Penerima yang dinilai!');
+        }
+
         // Simpan hasil perhitungan PROMETHEE hanya untuk alternatif yang sudah dinilai
         foreach ($results['alternatif_ids'] as $index => $alternatifId) {
             // Cek apakah alternatif sudah memiliki penilaian lengkap

@@ -22,7 +22,7 @@ class PrometheeService
     {
         $this->loadData();
         if ($this->alternatifs->count() < 2) {
-            session()->flash('error', 'PROMETHEE membutuhkan minimal 2 alternatif yang dinilai!');
+            session(['error' => 'PROMETHEE membutuhkan minimal 2 alternatif yang dinilai!']);
             return null; // Menghentikan 
         }
         $this->normalizeWeights();

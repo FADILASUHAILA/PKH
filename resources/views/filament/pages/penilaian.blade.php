@@ -1,4 +1,10 @@
 <x-filament::page>
+
+    @if(session('error'))
+    <div class="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <span class="font-medium">{{ session('error') }}</span>
+    </div>
+    @endif
     <!-- Modern Card with Header Actions -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
         <!-- Card Header -->
@@ -39,9 +45,10 @@
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $alternatif->nama }}</div>
-                                </div>
-                            </div>
+                            <div class="text-sm font-medium text-gray-900">{{ $alternatif->nama }}</div>
+
+
+
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">{{ $alternatif->biodata->nik?? '-' }}</div>
