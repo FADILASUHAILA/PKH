@@ -63,15 +63,15 @@ class AlternatifResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('kode')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                   
                 TextColumn::make('nama')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                    
                 TextColumn::make('desa.nama_desa')
                     ->label('Desa')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                    
             ])
             ->filters([
                 //

@@ -30,10 +30,13 @@ class KriteriaResource extends Resource
         return $form
             ->schema([
                 TextInput::make('kode')
+                 ->searchable()
                 ->required(),
                 TextInput::make('nama_kriteria')
+                 ->searchable()
                 ->required(),
                 TextInput::make('bobot')
+                 ->searchable()
                 ->required(),
             ]);
     }
@@ -42,9 +45,12 @@ class KriteriaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('kode'),
-                TextColumn::make('nama_kriteria'),
-                TextColumn::make('bobot'),
+                TextColumn::make('kode')
+                 ->searchable(),
+                TextColumn::make('nama_kriteria')
+                 ->searchable(),
+                TextColumn::make('bobot')
+                 ->searchable(),
             ])
             ->filters([
                 //
