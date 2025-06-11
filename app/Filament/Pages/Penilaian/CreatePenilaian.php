@@ -8,9 +8,11 @@ use App\Models\Penilaian;
 use App\Models\Kriteria;
 use App\Services\PrometheeService;
 use Illuminate\Support\Facades\Route;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class CreatePenilaian extends Page
 {
+    use HasPageShield;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.penilaian.create-penilaian';

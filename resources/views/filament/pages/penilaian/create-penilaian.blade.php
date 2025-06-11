@@ -20,7 +20,7 @@
                     @case(3) border-red-500 @break
                     @case(4) border-pink-500 @break
                     @default border-gray-500
-                @endswitch">
+                    @endswitch">
                         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
                             {{ $kriteria->kode }} - {{ $kriteria->nama_kriteria }}
                             @error('kriteria.'.$kriteria->id)
@@ -39,7 +39,7 @@
 
                                 <option
                                     value=""
-                                    
+
                                     x-bind:selected="showPlaceholder"
                                     class="text-gray-400">
                                     -- Pilih {{ $kriteria->nama_kriteria }} --
@@ -67,7 +67,7 @@
                     @case(2) border-purple-500 @break
                     @case(3) border-indigo-500 @break
                     @default border-gray-500
-                @endswitch">
+                    @endswitch">
                         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
                             {{ $kriteria->kode }} - {{ $kriteria->nama_kriteria }}
                             @error('kriteria.'.$kriteria->id)

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Kriteria;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,18 +22,22 @@ use Filament\Forms\Contracts\HasForms;
 use App\Models\Desa;
 use App\Models\Alternatif;
 use App\Models\BioData;
+use App\Models\Penilaian;
+use App\Models\SubKriteria;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\CreateAction;
+use Filament\Tables\Actions\Action as ActionsAction;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 
 class CalonPenerima extends Page implements HasForms, HasTable
 {
     use HasPageShield;
     use InteractsWithForms;
     use InteractsWithTable;
-    
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.calon-penerima';
 
@@ -95,11 +100,6 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
-                // TextColumn::make('kode')
-                //     ->label('Kode')
-                //     ->searchable()
-                //     ->sortable(),
-
                 TextColumn::make('bioData.nik')
                     ->label('NIK')
                     ->searchable()
@@ -139,81 +139,96 @@ class CalonPenerima extends Page implements HasForms, HasTable
                 // Anda bisa menambahkan filter berdasarkan desa jika diperlukan
             ])
             ->actions([
-                EditAction::make()
-                    ->form([
-                        TextInput::make('nik')
-                            ->label('NIK')
-                            ->required()
-                            ->numeric()
-                            ->maxLength(16),
+                ActionsActionGroup::make([
+                    ActionsAction::make('penilaian')
+                        ->label('Indikasi')
+                        ->icon('heroicon-o-clipboard-document-list')
+                        ->color('success')
+                        ->form($this->getPenilaianFormSchema())
+                        ->fillForm(fn(Alternatif $record): array => $this->getExistingPenilaian($record))
+                        ->action(function (Alternatif $record, array $data): void {
+                            $this->simpanPenilaian($record, $data);
+                        })
+                        ->modalHeading('Input Penilaian')
+                        ->modalSubmitActionLabel('Simpan')
+                        ->modalCancelActionLabel('Batal'),
+                    EditAction::make()
+                        ->form([
+                            TextInput::make('nik')
+                                ->label('NIK')
+                                ->required()
+                                ->numeric()
+                                ->maxLength(16),
 
-                        TextInput::make('nama')
-                            ->label('Nama Lengkap')
-                            ->required()
-                            ->maxLength(255),
+                            TextInput::make('nama')
+                                ->label('Nama Lengkap')
+                                ->required()
+                                ->maxLength(255),
 
-                        Select::make('desa_id')
-                            ->label('Desa')
-                            ->options(function () {
-                                return Desa::all()->pluck('nama_desa', 'id');
-                            })
-                            ->required()
-                            ->searchable(),
+                            Select::make('desa_id')
+                                ->label('Desa')
+                                ->options(function () {
+                                    return Desa::all()->pluck('nama_desa', 'id');
+                                })
+                                ->required()
+                                ->searchable(),
 
-                        Textarea::make('alamat')
-                            ->label('Alamat')
-                            ->required()
-                            ->columnSpanFull(),
+                            Textarea::make('alamat')
+                                ->label('Alamat')
+                                ->required()
+                                ->columnSpanFull(),
 
-                        TextInput::make('no_hp')
-                            ->label('Nomor HP')
-                            ->required()
-                            ->tel()
-                            ->maxLength(15),
-                    ])
-                    ->fillForm(function (Alternatif $record): array {
-                        return [
-                            'nik' => $record->bioData->nik ?? '',
-                            'nama' => $record->nama,
-                            'desa_id' => $record->desa_id,
-                            'alamat' => $record->bioData->alamat ?? '',
-                            'no_hp' => $record->bioData->no_hp ?? '',
-                        ];
-                    })
-                    ->using(function (Alternatif $record, array $data): Alternatif {
-                        $record->update([
-                            'nama' => $data['nama'],
-                            'desa_id' => $data['desa_id'],
-                        ]);
+                            TextInput::make('no_hp')
+                                ->label('Nomor HP')
+                                ->required()
+                                ->tel()
+                                ->maxLength(15),
+                        ])
+                        ->fillForm(function (Alternatif $record): array {
+                            return [
+                                'nik' => $record->bioData->nik ?? '',
+                                'nama' => $record->nama,
+                                'desa_id' => $record->desa_id,
+                                'alamat' => $record->bioData->alamat ?? '',
+                                'no_hp' => $record->bioData->no_hp ?? '',
+                            ];
+                        })
+                        ->using(function (Alternatif $record, array $data): Alternatif {
+                            $record->update([
+                                'nama' => $data['nama'],
+                                'desa_id' => $data['desa_id'],
+                            ]);
 
-                        $record->bioData()->updateOrCreate(
-                            ['alternatif_id' => $record->id],
-                            [
-                                'nik' => $data['nik'],
-                                'alamat' => $data['alamat'],
-                                'no_hp' => $data['no_hp'],
-                            ]
-                        );
+                            $record->bioData()->updateOrCreate(
+                                ['alternatif_id' => $record->id],
+                                [
+                                    'nik' => $data['nik'],
+                                    'alamat' => $data['alamat'],
+                                    'no_hp' => $data['no_hp'],
+                                ]
+                            );
 
-                        return $record;
-                    })
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Data berhasil diperbarui')
-                    ),
+                            return $record;
+                        })
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Data berhasil diperbarui')
+                        ),
 
-                DeleteAction::make()
-                    ->requiresConfirmation()
-                    ->modalHeading('Hapus Calon Penerima')
-                    ->modalDescription('Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.')
-                    ->modalSubmitActionLabel('Ya, Hapus')
-                    ->modalCancelActionLabel('Batal')
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Data berhasil dihapus')
-                    ),
+                    DeleteAction::make()
+                        ->requiresConfirmation()
+                        ->modalHeading('Hapus Calon Penerima')
+                        ->modalDescription('Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Hapus')
+                        ->modalCancelActionLabel('Batal')
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Data berhasil dihapus')
+                        ),
+                ])->label('Aksi Lainnya')
+                    ->icon('heroicon-o-ellipsis-vertical'),
             ])
             ->bulkActions([
                 // Anda bisa menambahkan bulk actions jika diperlukan
@@ -221,6 +236,79 @@ class CalonPenerima extends Page implements HasForms, HasTable
             ->emptyStateHeading('Belum ada data calon penerima')
             ->emptyStateDescription('Klik tombol "Tambah Calon Penerima" untuk menambahkan data baru.')
             ->emptyStateIcon('heroicon-o-users');
+    }
+
+    // Tambahkan method untuk form schema penilaian
+    protected function getPenilaianFormSchema(): array
+    {
+        $kriteria = Kriteria::with('subKriterias')->get();
+
+        $fields = [
+            Select::make('alternatif_id')
+                ->label('Masukkan Indikasi')
+                ->options(Alternatif::all()->pluck('nama', 'id'))
+                ->required()
+                ->searchable()
+                ->reactive(),
+        ];
+
+        foreach ($kriteria as $k) {
+            $fields[] = Select::make('kriteria_' . $k->id)
+                ->label($k->nama_kriteria)
+                ->options($k->subKriterias->pluck('nama_sub_kriteria', 'id'))
+                ->required()
+                ->searchable();
+        }
+
+        return $fields;
+    }
+
+    // Tambahkan method untuk mengambil data penilaian yang sudah ada
+    protected function getExistingPenilaian(Alternatif $record): array
+    {
+        $data = ['alternatif_id' => $record->id];
+
+        foreach ($record->penilaian as $penilaian) {
+            $data['kriteria_' . $penilaian->kriteria_id] = $penilaian->subkriteria_id;
+        }
+
+        return $data;
+    }
+
+    // Modifikasi method simpanPenilaian untuk menerima parameter Alternatif
+    protected function simpanPenilaian(Alternatif $record, array $data): void
+    {
+        try {
+            // Hapus penilaian lama jika ada
+            $record->penilaian()->delete();
+
+            // Simpan penilaian baru
+            foreach ($data as $key => $value) {
+                if (str_starts_with($key, 'kriteria_')) {
+                    $kriteriaId = str_replace('kriteria_', '', $key);
+                    $subkriteria = SubKriteria::findOrFail($value);
+
+                    Penilaian::create([
+                        'alternatif_id' => $record->id,
+                        'kriteria_id' => $kriteriaId,
+                        'subkriteria_id' => $value,
+                        'nilai' => $subkriteria->bobot,
+                    ]);
+                }
+            }
+
+            Notification::make()
+                ->title('Berhasil')
+                ->body('Data penilaian berhasil disimpan')
+                ->success()
+                ->send();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->body('Terjadi kesalahan: ' . $e->getMessage())
+                ->danger()
+                ->send();
+        }
     }
 
     protected function createRecord(array $data): void
@@ -257,7 +345,6 @@ class CalonPenerima extends Page implements HasForms, HasTable
                 ->body('Data calon penerima berhasil disimpan')
                 ->success()
                 ->send();
-
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Error')
