@@ -39,20 +39,20 @@ class SubKriteriaSeeder extends Seeder
                 ['Tidak ada anak sekolah', 5]
             ],
             'K5' => [ // Ibu Hamil
-                ['Ada', 30],
-                ['Tidak ada', 5]
+                ['Ada', 100],
+                ['Tidak ada', 0]
             ],
             'K6' => [ // Balita (0-6 thn)
                 ['Ada', 30],
-                ['Tidak ada', 5]
+                ['Tidak ada', 0]
             ],
             'K7' => [ // Disabilitas Berat
                 ['Ada', 40],
-                ['Tidak ada', 5]
+                ['Tidak ada', 0]
             ],
             'K8' => [ // Lansia ≥70 thn
                 ['Ada', 20],
-                ['Tidak ada', 5]
+                ['Tidak ada', 0]
             ],
             'K9' => [ // Luas Lantai
                 ['<8 m² per orang', 50],

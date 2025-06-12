@@ -21,10 +21,10 @@ class AlternatifResource extends Resource
 {
     protected static ?string $model = Alternatif::class;
     protected static ?string $navigationGroup = 'Master Data';
-      protected static ?int $navigationSort = 1; 
-    
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    
+
 
     public static function form(Form $form): Form
     {
@@ -36,13 +36,13 @@ class AlternatifResource extends Resource
                     ->maxLength(255)
                     ->placeholder('Masukkan kode alternatif')
                     ->unique(ignoreRecord: true),
-                    
+
                 TextInput::make('nama')
                     ->label('Nama Alternatif')
                     ->required()
                     ->maxLength(255)
                     ->placeholder('Masukkan nama alternatif'),
-                    
+
                 Select::make('desa_id')
                     ->label('Desa')
                     ->relationship('desa', 'nama_desa')
@@ -63,16 +63,20 @@ class AlternatifResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('kode')
+                    ->sortable()
                     ->searchable(),
-                   
+
                 TextColumn::make('nama')
+                    ->sortable()
                     ->searchable(),
-                    
+
                 TextColumn::make('desa.nama_desa')
                     ->label('Desa')
+                    ->sortable()
                     ->searchable(),
-                    
+
             ])
+            
             ->filters([
                 //
             ])

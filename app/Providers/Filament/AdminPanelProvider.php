@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('SPK PKH')
             // ->spa()
             ->colors([
                 'primary' => Color::Rose
@@ -37,8 +38,10 @@ class AdminPanelProvider extends PanelProvider
                 'Dashboard',
                 'Master Data',
                 'Management Pengguna',
+                
                 'Perhitungan',
                 'Pelindung'
+                
             ])
             ->theme(asset('css/filament/admin/theme.css'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

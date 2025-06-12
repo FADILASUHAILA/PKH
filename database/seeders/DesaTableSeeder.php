@@ -8,16 +8,7 @@ use App\Models\Desa;
 class DesaTableSeeder extends Seeder
 {
     protected $realIndonesianVillages = [
-        'Adipala', 'Banjarnegara', 'Banyumas', 'Baturraden', 'Brebes',
-        'Cilacap', 'Cipari', 'Dayeuhluhur', 'Gandrungmangu', 'Gumelar',
-        'Jeruklegi', 'Karangpucung', 'Kawunganten', 'Kebumen', 'Kedungbanteng',
-        'Kroya', 'Kutowinangun', 'Majenang', 'Maos', 'Nusawungu',
-        'Patimuan', 'Pekalongan', 'Pemalang', 'Purbalingga', 'Purwokerto',
-        'Purworejo', 'Randudongkal', 'Sidareja', 'Sumpiuh', 'Tegal',
-        'Wangon', 'Watukumpul', 'Wonosobo', 'Ajibarang', 'Bumiayu',
-        'Ciamis', 'Cihaurbeuti', 'Cijulang', 'Cimaragas', 'Cipatujah',
-        'Cisaga', 'Cisolok', 'Garut', 'Indihiang', 'Jatiwaras',
-        'Kawali', 'Lakbok', 'Mangunreja', 'Panjalu', 'Rajadesa'
+        'Alue Gunto', 'Ampeh', 'Ara', 'Awe', 'Blang', 'Calong', 'Cibrek Baroh', 'Cibrek Tunong', ' Dayah Teungku', 'Dayah Aron', 'Dayah Meuria', 'Gampong U', 'Glok', 'Hagu', 'Kanot', 'Keude Aron', 'Keude Teupin', 'Keutapang', 'Kulam', 'Kumbang', 'Mampree', 'Manyang Baroh', 'Matang Munye', 'Mee Aron', 'Mesjid', 'Meucat','Moncrang', 'Pante', 'Peurupok', 'Pulo', 'Tanjong Mulieng'
     ];
 
     public function run(): void
