@@ -1,12 +1,10 @@
 <?php
 
 namespace App\Services;
-
 use App\Models\Alternatif;
 use App\Models\Kriteria;
 use App\Models\Penilaian;
 use Illuminate\Support\Facades\Log;
-
 class PrometheeService
 {
     private $alternatifs;
