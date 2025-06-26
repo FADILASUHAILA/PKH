@@ -5,11 +5,14 @@ namespace App\Filament\Pages;
 use App\Models\Alternatif;
 use App\Models\Desa;
 use App\Models\Kriteria;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Carbon\Carbon;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
+    // use HasPageShield;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.dashboard';

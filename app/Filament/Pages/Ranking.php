@@ -8,15 +8,13 @@ use Filament\Pages\Page;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class HasilPerangkingan extends Page
+class Ranking extends Page
 {
     use HasPageShield;
     
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.hasil-perangkingan';
-
-    protected static ?string $navigationGroup = 'Perhitungan';
+    protected static string $view = 'filament.pages.ranking';
 
     protected static ?int $navigationSort = 3;
 
