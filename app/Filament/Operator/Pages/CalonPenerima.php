@@ -37,7 +37,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static string $view = 'filament.operator.pages.calon-penerima';
 
     public ?array $data = [];

@@ -2,28 +2,63 @@
 
 namespace App\Filament\Operator\Pages;
 
-use Filament\Pages\Page;
+use App\Models\Alternatif;
+use App\Models\Desa;
 use App\Models\HasilPenilaian;
+use App\Models\Kriteria;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Carbon\Carbon;
+use Filament\Pages\Dashboard as BaseDashboard;
 
-class Ranking extends Page
+class Dashboard extends BaseDashboard
 {
-    use HasPageShield;
-    
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
+    // use HasPageShield;
 
-    protected static string $view = 'filament.operator.pages.ranking';
+    protected static ?string $navigationIcon = 'heroicon-o-home';
 
-    protected static ?int $navigationSort = 3;
+    protected static string $view = 'filament.operator.pages.dashboard';
 
+    public $totalAlternatif;
+    public $totalDesa;
+    public $totalKriteria;
+    public $latestAlternatifs;
+    public $alternatifPerDesa;
+    public $monthlyGrowth;
     public $hasilPenilaian;
     public $alternatifs;
     public $rankingData;
 
     public function mount()
     {
+        $this->totalAlternatif = Alternatif::count();
+        $this->totalDesa = Desa::count();
+        $this->totalKriteria = Kriteria::count();
+        $this->latestAlternatifs = Alternatif::with('desa')->latest()->take(5)->get();
+
+        // Data untuk chart alternatif per desa
+        $this->alternatifPerDesa = Desa::withCount('alternatifs')
+            ->orderBy('alternatifs_count', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($desa) {
+                return [
+                    'desa' => $desa->nama_desa,
+                    'total' => $desa->alternatifs_count
+                ];
+            });
+
+        // Data untuk pertumbuhan bulanan
+        $this->monthlyGrowth = Alternatif::selectRaw('
+        EXTRACT(YEAR FROM created_at) as year,
+        EXTRACT(MONTH FROM created_at) as month,
+        COUNT(*) as total
+    ')
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+
         $this->hasilPenilaian = HasilPenilaian::with(['alternatif.biodata', 'penilaian'])
             ->latest()
             ->get()
@@ -100,24 +135,5 @@ class Ranking extends Page
             'colors' => $colors,
             'niks' => $niks
         ];
-    }
-
-    public function downloadPdf()
-    {
-        $options = new Options();
-        $options->set('defaultFont', 'Courier');
-        $dompdf = new Dompdf($options);
-        // Ambil data dari session
-        $rankingData = session('rankingData');
-        if (!$rankingData) {
-            return abort(404, 'Data tidak ditemukan');
-        }
-        $html = view('filament.pages.pdf-hasil-perangkingan', [
-            'rankingData' => $rankingData
-        ])->render();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'potrait');
-        $dompdf->render();
-        $dompdf->stream('hasil_perangkingan.pdf');
     }
 }
