@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 class PrometheeService
 {
     private $alternatifs;
-    private $kriterias;
-    private $normalizedWeights;
+    private $kriterias; 
+    private $normalizedWeights;  
     private $decisionMatrix;
     private $preferenceMatrix;
     private $leavingFlow;
@@ -182,3 +182,5 @@ class PrometheeService
         ];
     }
 }
+
+
