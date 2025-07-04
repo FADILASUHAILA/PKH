@@ -73,7 +73,6 @@ class PrometheeService
     private function buildDecisionMatrix()
     {
         $this->decisionMatrix = [];
-        
         foreach ($this->alternatifs as $alt) {
             foreach ($this->kriterias as $kriteria) {
                 $penilaian = $alt->penilaian->firstWhere('kriteria_id', $kriteria->id);
@@ -82,6 +81,7 @@ class PrometheeService
         }
     }
 
+    
     private function validateDecisionMatrix()
     {
         foreach ($this->alternatifs as $alt) {

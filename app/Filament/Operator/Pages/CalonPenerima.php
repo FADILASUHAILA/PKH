@@ -54,7 +54,8 @@ class CalonPenerima extends Page implements HasForms, HasTable
                         ->label('NIK')
                         ->required()
                         ->numeric()
-                        ->maxLength(16)
+                        ->length(16) // Memastikan tepat 16 digit
+                        ->rules(['digits:16']) // Validasi harus 16 digit
                         ->unique(BioData::class, 'nik'),
 
                     TextInput::make('nama')
