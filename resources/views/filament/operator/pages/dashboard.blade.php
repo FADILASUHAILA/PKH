@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     <div class="container mx-auto px-4 py-8 space-y-8">
         <!-- Stats Cards with improved design -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Alternatif Card -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-600 group overflow-hidden relative">
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 dark:from-blue-900/30 dark:to-gray-800/50"></div>
@@ -12,7 +12,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">TOTAL CALON ALTERNATIF</p>
+                        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">TOTAL CALON PENERIMA</p>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalAlternatif }}</h3>
                         <div class="flex items-center mt-2">
                             <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">+5.2%</span>
@@ -37,26 +37,6 @@
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalDesa }}</h3>
                         <div class="flex items-center mt-2">
                             <span class="text-xs font-medium px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200">+2.1%</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">vs bulan lalu</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kriteria Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-amber-500 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-amber-600 group overflow-hidden relative">
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 dark:from-amber-900/30 dark:to-gray-800/50"></div>
-                <div class="relative z-10 flex items-center">
-                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600 mr-4 shadow-inner dark:bg-amber-900/30 dark:text-amber-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">TOTAL KRITERIA</p>
-                        <h3 class="text-3xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalKriteria }}</h3>
-                        <div class="flex items-center mt-2">
-                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">+0.8%</span>
                             <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">vs bulan lalu</span>
                         </div>
                     </div>

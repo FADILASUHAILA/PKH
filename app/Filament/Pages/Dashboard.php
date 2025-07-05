@@ -6,6 +6,7 @@ use App\Models\Alternatif;
 use App\Models\Desa;
 use App\Models\HasilPenilaian;
 use App\Models\Kriteria;
+use App\Models\SubKriteria;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Carbon\Carbon;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -19,7 +20,7 @@ class Dashboard extends BaseDashboard
     protected static string $view = 'filament.pages.dashboard';
 
     public $totalAlternatif;
-    public $totalDesa;
+    public $totalSubKriteria;
     public $totalKriteria;
     public $latestAlternatifs;
     public $alternatifPerDesa;
@@ -31,7 +32,7 @@ class Dashboard extends BaseDashboard
     public function mount()
     {
         $this->totalAlternatif = Alternatif::count();
-        $this->totalDesa = Desa::count();
+        $this->totalSubKriteria = SubKriteria::count();
         $this->totalKriteria = Kriteria::count();
         $this->latestAlternatifs = Alternatif::with('desa')->latest()->take(5)->get();
 

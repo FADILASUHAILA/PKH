@@ -22,26 +22,6 @@
                 </div>
             </div>
 
-            <!-- Desa Card -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-emerald-500 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-xl bg-emerald-50 text-emerald-600 mr-4 shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 text-sm font-medium">TOTAL DESA</p>
-                        <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalDesa }}</h3>
-                        <div class="flex items-center mt-2">
-                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-emerald-100 text-emerald-800">+2.1%</span>
-                            <span class="text-xs text-gray-500 ml-2">vs bulan lalu</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Kriteria Card -->
             <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-amber-500 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div class="flex items-center">
@@ -53,6 +33,25 @@
                     <div>
                         <p class="text-gray-500 text-sm font-medium">TOTAL KRITERIA</p>
                         <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalKriteria }}</h3>
+                        <div class="flex items-center mt-2">
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-amber-100 text-amber-800">+0.8%</span>
+                            <span class="text-xs text-gray-500 ml-2">vs bulan lalu</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub Kriteria Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-amber-500 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600 mr-4 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">TOTAL SUB KRITERIA</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalSubKriteria }}</h3>
                         <div class="flex items-center mt-2">
                             <span class="text-xs font-medium px-2 py-1 rounded-full bg-amber-100 text-amber-800">+0.8%</span>
                             <span class="text-xs text-gray-500 ml-2">vs bulan lalu</span>
