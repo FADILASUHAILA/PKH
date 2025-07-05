@@ -53,7 +53,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     TextInput::make('nik')
                         ->label('NIK')
                         ->required()
-                        ->numeric()
+                        ->mask('9999999999999999') // Maksimal 16 digit angka
                         ->maxLength(16)
                         ->unique(BioData::class, 'nik'),
 
@@ -78,6 +78,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     TextInput::make('no_hp')
                         ->label('Nomor HP')
                         ->required()
+                        ->mask('9999999999999999') // Maksimal 16 digit angka
                         ->tel()
                         ->maxLength(15),
                 ])
@@ -180,6 +181,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
                             TextInput::make('no_hp')
                                 ->label('Nomor HP')
                                 ->required()
+                                ->numeric()
                                 ->tel()
                                 ->maxLength(15),
                         ])

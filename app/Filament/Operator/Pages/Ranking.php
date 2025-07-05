@@ -10,13 +10,15 @@ use Dompdf\Options;
 
 class Ranking extends Page
 {
-    use HasPageShield;
+
     
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
 
     protected static string $view = 'filament.operator.pages.ranking';
 
     protected static ?int $navigationSort = 3;
+
+    protected static ?string $title = 'Hasil Keputusan';
 
     public $hasilPenilaian;
     public $alternatifs;
