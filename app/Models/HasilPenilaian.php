@@ -62,4 +62,10 @@ class HasilPenilaian extends Model
     {
         return number_format($this->net_flow, 6);
     }
+
+    // app/Models/HasilPenilaian.php
+    public function header()
+    {
+        return $this->belongsTo(PenilaianHeader::class, 'header_id');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Operator\Pages;
 
+use App\Models\Indikasi;
 use App\Models\Kriteria;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\CreateAction;
 use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
+use Illuminate\Support\Facades\DB;
 
 class CalonPenerima extends Page implements HasForms, HasTable
 {
@@ -42,6 +44,9 @@ class CalonPenerima extends Page implements HasForms, HasTable
 
     public ?array $data = [];
 
+    // Daftar kriteria yang menggunakan indikasi
+    protected array $kriteriaIndikasi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
     protected function getHeaderActions(): array
     {
         return [
@@ -53,7 +58,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     TextInput::make('nik')
                         ->label('NIK')
                         ->required()
-                        ->mask('9999999999999999') // Maksimal 16 digit angka
+                        ->mask('9999999999999999')
                         ->maxLength(16)
                         ->unique(BioData::class, 'nik'),
 
@@ -64,9 +69,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
 
                     Select::make('desa_id')
                         ->label('Desa')
-                        ->options(function () {
-                            return Desa::all()->pluck('nama_desa', 'id');
-                        })
+                        ->options(Desa::all()->pluck('nama_desa', 'id'))
                         ->required()
                         ->searchable(),
 
@@ -78,7 +81,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     TextInput::make('no_hp')
                         ->label('Nomor HP')
                         ->required()
-                        ->mask('9999999999999999') // Maksimal 16 digit angka
+                        ->mask('9999999999999999')
                         ->tel()
                         ->maxLength(15),
                 ])
@@ -96,7 +99,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
         return $table
             ->query(
                 Alternatif::query()
-                    ->with(['desa', 'bioData'])
+                    ->with(['desa', 'bioData', 'indikasis'])
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
@@ -120,10 +123,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     ->limit(50)
                     ->tooltip(function (TextColumn $column): ?string {
                         $state = $column->getState();
-                        if (strlen($state) <= 50) {
-                            return null;
-                        }
-                        return $state;
+                        return strlen($state) <= 50 ? null : $state;
                     }),
 
                 TextColumn::make('bioData.no_hp')
@@ -136,124 +136,196 @@ class CalonPenerima extends Page implements HasForms, HasTable
                     ->sortable(),
             ])
             ->filters([
-                // Anda bisa menambahkan filter berdasarkan desa jika diperlukan
+                // Filter tambahan bisa ditambahkan di sini
             ])
             ->actions([
                 ActionsActionGroup::make([
-                    ActionsAction::make('penilaian')
-                        ->label('Indikasi')
-                        ->icon('heroicon-o-clipboard-document-list')
-                        ->color('success')
-                        ->form($this->getPenilaianFormSchema())
-                        ->fillForm(fn(Alternatif $record): array => $this->getExistingPenilaian($record))
-                        ->action(function (Alternatif $record, array $data): void {
-                            $this->simpanPenilaian($record, $data);
-                        })
-                        ->modalHeading('Input Penilaian')
-                        ->modalSubmitActionLabel('Simpan')
-                        ->modalCancelActionLabel('Batal'),
-                    EditAction::make()
-                        ->form([
-                            TextInput::make('nik')
-                                ->label('NIK')
-                                ->required()
-                                ->numeric()
-                                ->maxLength(16),
-
-                            TextInput::make('nama')
-                                ->label('Nama Lengkap')
-                                ->required()
-                                ->maxLength(255),
-
-                            Select::make('desa_id')
-                                ->label('Desa')
-                                ->options(function () {
-                                    return Desa::all()->pluck('nama_desa', 'id');
-                                })
-                                ->required()
-                                ->searchable(),
-
-                            Textarea::make('alamat')
-                                ->label('Alamat')
-                                ->required()
-                                ->columnSpanFull(),
-
-                            TextInput::make('no_hp')
-                                ->label('Nomor HP')
-                                ->required()
-                                ->numeric()
-                                ->tel()
-                                ->maxLength(15),
-                        ])
-                        ->fillForm(function (Alternatif $record): array {
-                            return [
-                                'nik' => $record->bioData->nik ?? '',
-                                'nama' => $record->nama,
-                                'desa_id' => $record->desa_id,
-                                'alamat' => $record->bioData->alamat ?? '',
-                                'no_hp' => $record->bioData->no_hp ?? '',
-                            ];
-                        })
-                        ->using(function (Alternatif $record, array $data): Alternatif {
-                            $record->update([
-                                'nama' => $data['nama'],
-                                'desa_id' => $data['desa_id'],
-                            ]);
-
-                            $record->bioData()->updateOrCreate(
-                                ['alternatif_id' => $record->id],
-                                [
-                                    'nik' => $data['nik'],
-                                    'alamat' => $data['alamat'],
-                                    'no_hp' => $data['no_hp'],
-                                ]
-                            );
-
-                            return $record;
-                        })
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Data berhasil diperbarui')
-                        ),
-
-                    DeleteAction::make()
-                        ->requiresConfirmation()
-                        ->modalHeading('Hapus Calon Penerima')
-                        ->modalDescription('Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.')
-                        ->modalSubmitActionLabel('Ya, Hapus')
-                        ->modalCancelActionLabel('Batal')
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Data berhasil dihapus')
-                        ),
+                    $this->getIndikasiAction(),
+                    $this->getEditAction(),
+                    $this->getDeleteAction(),
                 ])->label('Aksi Lainnya')
                     ->icon('heroicon-o-ellipsis-vertical'),
             ])
             ->bulkActions([
-                // Anda bisa menambahkan bulk actions jika diperlukan
+                // Bulk actions bisa ditambahkan di sini
             ])
             ->emptyStateHeading('Belum ada data calon penerima')
             ->emptyStateDescription('Klik tombol "Tambah Calon Penerima" untuk menambahkan data baru.')
             ->emptyStateIcon('heroicon-o-users');
     }
 
-    // Tambahkan method untuk form schema penilaian
+    protected function getIndikasiAction(): ActionsAction
+    {
+        return ActionsAction::make('indikasi')
+            ->label('Input Indikasi')
+            ->icon('heroicon-o-clipboard-document-check')
+            ->color('primary')
+            ->form($this->getIndikasiFormSchema())
+            ->fillForm(fn(Alternatif $record): array => $this->getExistingIndikasi($record))
+            ->action(function (Alternatif $record, array $data): void {
+                $this->simpanIndikasi($record, $data);
+            })
+            ->modalHeading('Input Data Indikasi')
+            ->modalSubmitActionLabel('Simpan')
+            ->modalCancelActionLabel('Batal');
+    }
+
+    protected function getEditAction(): EditAction
+    {
+        return EditAction::make()
+            ->form([
+                TextInput::make('nik')
+                    ->label('NIK')
+                    ->required()
+                    ->numeric()
+                    ->maxLength(16),
+
+                TextInput::make('nama')
+                    ->label('Nama Lengkap')
+                    ->required()
+                    ->maxLength(255),
+
+                Select::make('desa_id')
+                    ->label('Desa')
+                    ->options(Desa::all()->pluck('nama_desa', 'id'))
+                    ->required()
+                    ->searchable(),
+
+                Textarea::make('alamat')
+                    ->label('Alamat')
+                    ->required()
+                    ->columnSpanFull(),
+
+                TextInput::make('no_hp')
+                    ->label('Nomor HP')
+                    ->required()
+                    ->numeric()
+                    ->tel()
+                    ->maxLength(15),
+            ])
+            ->fillForm(function (Alternatif $record): array {
+                return [
+                    'nik' => $record->bioData->nik ?? '',
+                    'nama' => $record->nama,
+                    'desa_id' => $record->desa_id,
+                    'alamat' => $record->bioData->alamat ?? '',
+                    'no_hp' => $record->bioData->no_hp ?? '',
+                ];
+            })
+            ->using(function (Alternatif $record, array $data): Alternatif {
+                $record->update([
+                    'nama' => $data['nama'],
+                    'desa_id' => $data['desa_id'],
+                ]);
+
+                $record->bioData()->updateOrCreate(
+                    ['alternatif_id' => $record->id],
+                    [
+                        'nik' => $data['nik'],
+                        'alamat' => $data['alamat'],
+                        'no_hp' => $data['no_hp'],
+                    ]
+                );
+
+                return $record;
+            })
+            ->successNotification(
+                Notification::make()
+                    ->success()
+                    ->title('Data berhasil diperbarui')
+            );
+    }
+
+    protected function getDeleteAction(): DeleteAction
+    {
+        return DeleteAction::make()
+            ->requiresConfirmation()
+            ->modalHeading('Hapus Calon Penerima')
+            ->modalDescription('Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.')
+            ->modalSubmitActionLabel('Ya, Hapus')
+            ->modalCancelActionLabel('Batal')
+            ->successNotification(
+                Notification::make()
+                    ->success()
+                    ->title('Data berhasil dihapus')
+            );
+    }
+
+    protected function getIndikasiFormSchema(): array
+    {
+        return [
+            TextInput::make('penghasilan')
+                ->label('Penghasilan per Bulan (Rp)')
+                ->required()
+                ->numeric()
+                ->minValue(0),
+
+            Select::make('pekerjaan')
+                ->label('Pekerjaan')
+                ->options(['Tidak bekerja' => 'Tidak bekerja', 'Pekerja harian lepas' => 'Pekerja harian lepas', 'Pekerja tetap' => 'Pekerja tetap'])
+                ->required(),
+
+            TextInput::make('jumlah_tanggungan')
+                ->label('Jumlah Tanggungan')
+                ->required()
+                ->numeric()
+                ->minValue(0),
+
+            TextInput::make('jumlah_anak_sekolah')
+                ->label('Jumlah Anak Sekolah')
+                ->required()
+                ->numeric()
+                ->minValue(0),
+
+            Select::make('ibu_hamil')
+                ->label('Ibu Hamil')
+                ->options(['Ada' => 'Ada', 'Tidak Ada' => 'Tidak Ada'])
+                ->required(),
+
+            Select::make('balita')
+                ->label('Balita')
+                ->options(['Ada' => 'Ada', 'Tidak Ada' => 'Tidak Ada'])
+                ->required(),
+
+            Select::make('anggota_disabilitas')
+                ->label('Anggota Disabilitas')
+                ->options(['Ada' => 'Ada', 'Tidak Ada' => 'Tidak Ada'])
+                ->required(),
+
+            Select::make('lansia')
+                ->label('Lansia')
+                ->options(['Ada' => 'Ada', 'Tidak Ada' => 'Tidak Ada'])
+                ->required(),
+
+            Select::make('luas_lantai')
+                ->label('Luas Lantai (m²)')
+                ->options(['<8 m² per orang' => '<8 m² per orang', '8-15 m² per orang' => '8-15 m² per orang', '>15 m² per orang' => '>15 m² per orang'])
+                ->required(),
+
+            Select::make('jenis_lantai')
+                ->label('Jenis Lantai')
+                ->options(['Tanah' => 'Tanah', 'Bambu' => 'Bambu', 'semen' => 'semen', 'Keramik' => 'Keramik'])
+                ->required(),
+
+            Select::make('jenis_dinding')
+                ->label('Jenis Dinding')
+                ->options(['Bambu/rumbia/kayu rendah' => 'Bambu/rumbia/kayu rendah', 'Tembok/Semen' => 'Tembok/Semen'])
+                ->required(),
+        ];
+    }
+
     protected function getPenilaianFormSchema(): array
     {
         $kriteria = Kriteria::with('subKriterias')->get();
 
-        $fields = [
-            Select::make('alternatif_id')
-                ->label('Masukkan Indikasi')
-                ->options(Alternatif::all()->pluck('nama', 'id'))
-                ->required()
-                ->searchable()
-                ->reactive(),
-        ];
+        $fields = [];
 
         foreach ($kriteria as $k) {
+            // Skip kriteria yang sudah dihandle oleh indikasi
+            if (in_array($k->id, $this->kriteriaIndikasi)) {
+                continue;
+            }
+
             $fields[] = Select::make('kriteria_' . $k->id)
                 ->label($k->nama_kriteria)
                 ->options($k->subKriterias->pluck('nama_sub_kriteria', 'id'))
@@ -264,46 +336,49 @@ class CalonPenerima extends Page implements HasForms, HasTable
         return $fields;
     }
 
-    // Tambahkan method untuk mengambil data penilaian yang sudah ada
+    protected function getExistingIndikasi(Alternatif $record): array
+    {
+        $indikasi = $record->indikasis()->first();
+        return $indikasi ? $indikasi->toArray() : [];
+    }
+
     protected function getExistingPenilaian(Alternatif $record): array
     {
-        $data = ['alternatif_id' => $record->id];
+        $data = [];
+        $penilaians = $record->penilaian()->with('subKriteria')->get();
 
-        foreach ($record->penilaian as $penilaian) {
-            $data['kriteria_' . $penilaian->kriteria_id] = $penilaian->subkriteria_id;
+        foreach ($penilaians as $penilaian) {
+            // Hanya ambil penilaian untuk kriteria non-indikasi
+            if (!in_array($penilaian->kriteria_id, $this->kriteriaIndikasi)) {
+                $data['kriteria_' . $penilaian->kriteria_id] = $penilaian->subkriteria_id;
+            }
         }
 
         return $data;
     }
 
-    // Modifikasi method simpanPenilaian untuk menerima parameter Alternatif
-    protected function simpanPenilaian(Alternatif $record, array $data): void
+    protected function simpanIndikasi(Alternatif $record, array $data): void
     {
+        DB::beginTransaction();
         try {
-            // Hapus penilaian lama jika ada
-            $record->penilaian()->delete();
+            // Simpan atau update data indikasi
+            $indikasi = $record->indikasis()->updateOrCreate(
+                ['alternatif_id' => $record->id],
+                $data
+            );
 
-            // Simpan penilaian baru
-            foreach ($data as $key => $value) {
-                if (str_starts_with($key, 'kriteria_')) {
-                    $kriteriaId = str_replace('kriteria_', '', $key);
-                    $subkriteria = SubKriteria::findOrFail($value);
+            // Konversi ke penilaian dalam transaction yang sama
+            $indikasi->konversiKePenilaian();
 
-                    Penilaian::create([
-                        'alternatif_id' => $record->id,
-                        'kriteria_id' => $kriteriaId,
-                        'subkriteria_id' => $value,
-                        'nilai' => $subkriteria->bobot,
-                    ]);
-                }
-            }
+            DB::commit();
 
             Notification::make()
                 ->title('Berhasil')
-                ->body('Data penilaian berhasil disimpan')
+                ->body('Data indikasi dan penilaian berhasil disimpan')
                 ->success()
                 ->send();
         } catch (\Exception $e) {
+            DB::rollBack();
             Notification::make()
                 ->title('Error')
                 ->body('Terjadi kesalahan: ' . $e->getMessage())
@@ -312,35 +387,33 @@ class CalonPenerima extends Page implements HasForms, HasTable
         }
     }
 
+
+
     protected function createRecord(array $data): void
     {
         try {
-            // Validasi NIK unik
-            if (BioData::where('nik', $data['nik'])->exists()) {
-                Notification::make()
-                    ->title('Error')
-                    ->body('NIK sudah terdaftar')
-                    ->danger()
-                    ->send();
-                return;
-            }
+            DB::transaction(function () use ($data) {
+                // Validasi NIK unik
+                if (BioData::where('nik', $data['nik'])->exists()) {
+                    throw new \Exception('NIK sudah terdaftar');
+                }
 
-            // Simpan data alternatif
-            $alternatif = Alternatif::create([
-                'kode' => 'ALT-' . Str::random(8),
-                'nama' => $data['nama'],
-                'desa_id' => $data['desa_id'],
-            ]);
+                // Simpan data alternatif
+                $alternatif = Alternatif::create([
+                    'kode' => 'ALT-' . Str::random(8),
+                    'nama' => $data['nama'],
+                    'desa_id' => $data['desa_id'],
+                ]);
 
-            // Simpan biodata terkait
-            BioData::create([
-                'nik' => $data['nik'],
-                'alamat' => $data['alamat'],
-                'no_hp' => $data['no_hp'],
-                'alternatif_id' => $alternatif->id,
-            ]);
+                // Simpan biodata terkait
+                BioData::create([
+                    'nik' => $data['nik'],
+                    'alamat' => $data['alamat'],
+                    'no_hp' => $data['no_hp'],
+                    'alternatif_id' => $alternatif->id,
+                ]);
+            });
 
-            // Notifikasi sukses
             Notification::make()
                 ->title('Berhasil')
                 ->body('Data calon penerima berhasil disimpan')
@@ -355,7 +428,6 @@ class CalonPenerima extends Page implements HasForms, HasTable
         }
     }
 
-    // Method lama untuk form di halaman (jika masih diperlukan)
     public function form(Form $form): Form
     {
         return $form
@@ -373,9 +445,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
 
                 Select::make('desa_id')
                     ->label('Desa')
-                    ->options(function () {
-                        return Desa::all()->pluck('nama_desa', 'id');
-                    })
+                    ->options(Desa::all()->pluck('nama_desa', 'id'))
                     ->required()
                     ->reactive(),
 
@@ -396,7 +466,6 @@ class CalonPenerima extends Page implements HasForms, HasTable
 
     public function create(): void
     {
-        // Validasi dulu
         $this->validate([
             'data.nik' => 'required|numeric|digits:16|unique:bio_data,nik',
             'data.nama' => 'required|string|max:255',

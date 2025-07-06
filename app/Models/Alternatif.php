@@ -24,7 +24,7 @@ class Alternatif extends Model
     {
         return $this->hasMany(Kriteria::class);
     }
-    
+
     public function penilaian(): HasMany
     {
         return $this->hasMany(Penilaian::class, 'alternatif_id');
@@ -34,14 +34,25 @@ class Alternatif extends Model
     {
         return $this->hasMany(HasilPenilaian::class, 'alternatif_id');
     }
-    
+
     public function desa(): BelongsTo
     {
         return $this->belongsTo(Desa::class, 'desa_id');
     }
-    
+
     public function biodata(): HasOne
     {
         return $this->hasOne(BioData::class, 'alternatif_id');
+    }
+
+    // app/Models/Alternatif.php
+    public function indikasis(): HasMany
+    {
+        return $this->hasMany(Indikasi::class, 'alternatif_id');
+    }
+
+    public function penilaianHeaders()
+    {
+        return $this->hasMany(PenilaianHeader::class);
     }
 }
