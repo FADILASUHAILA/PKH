@@ -106,17 +106,33 @@ class Indikasi extends Model
 
     protected function prosesPekerjaan($alternatif)
     {
-        $subkriteria = match ($this->pekerjaan) {
-            'Tidak bekerja' => ['nama' => 'Tidak bekerja'],
-            'Pekerja harian lepas' => ['nama' => 'Pekerja harian lepas'],
-            'Pekerja tetap' => ['nama' => 'Pekerja tetap'],
+        // Pastikan pekerjaan sudah sesuai dengan enum dari migrasi
+        $pekerjaan = trim($this->pekerjaan);
+
+        $subkriteria = match ($pekerjaan) {
+            'Tidak bekerja' => [
+                'nama' => 'Tidak bekerja',
+            ],
+            'Petani', 'Kuli' => [
+                'nama' => 'Pekerja harian lepas',
+            ],
+            'Karyawan' => [
+                'nama' => 'Pekerja tetap',
+            ],
+            'Pedagang' => [
+                'nama' => 'Pekerja harian lepas',
+            ],
             default => null
         };
+
+        // dd($subkriteria);
 
         if ($subkriteria) {
             $this->simpanPenilaian($alternatif, 2, $subkriteria['nama']);
         } else {
             Log::warning('Pekerjaan tidak valid', ['pekerjaan' => $this->pekerjaan]);
+            // Anda bisa menambahkan penanganan error lebih lanjut jika perlu
+            throw new \InvalidArgumentException("Pekerjaan '{$this->pekerjaan}' tidak valid");
         }
     }
 

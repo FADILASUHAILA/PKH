@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('indikasis', function (Blueprint $table) {
             $table->id();
             $table->integer('penghasilan');
-            $table->enum('pekerjaan', ['Tidak bekerja', 'Pekerja harian lepas', 'Pekerja tetap']);
+            $table->enum('pekerjaan', ['Tidak bekerja', 'Pedagang', 'Petani', 'Kuli', 'Karyawan']);
             $table->integer('jumlah_tanggungan');
             $table->integer('jumlah_anak_sekolah');
             $table->enum('ibu_hamil', ['Ada', 'Tidak Ada']);

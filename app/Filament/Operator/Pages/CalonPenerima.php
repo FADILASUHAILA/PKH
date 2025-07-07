@@ -262,7 +262,7 @@ class CalonPenerima extends Page implements HasForms, HasTable
 
             Select::make('pekerjaan')
                 ->label('Pekerjaan')
-                ->options(['Tidak bekerja' => 'Tidak bekerja', 'Pekerja harian lepas' => 'Pekerja harian lepas', 'Pekerja tetap' => 'Pekerja tetap'])
+                ->options(['Tidak bekerja' => 'Tidak bekerja', 'Pedagang' => 'Pedagang', 'Petani' => 'Petani', 'Kuli' => 'Kuli', 'Karyawan' => 'Karyawan'])
                 ->required(),
 
             TextInput::make('jumlah_tanggungan')
