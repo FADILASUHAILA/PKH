@@ -4,102 +4,196 @@
         <span class="font-medium">Belum ada data perangkingan. Silahkan lakukan perhitungan PROMETHEE terlebih dahulu.</span>
     </div>
     @else
-    <!-- Modern Card with Header Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-        <!-- Card Header -->
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-            <div>
-                <p class="text-sm text-gray-500 mt-1">Data Hasil Perangkingan dari Hasil Perhitungan menggunakan Metode Promethee</p>
-            </div>
-            <div>
-                <a href="{{ route('hasil-perangkingan.pdf') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150">
-                    Download PDF
-                </a>
-            </div>
-        </div>
-
-
-        <!-- Table Container -->
-        <div class="overflow-x-auto">
-            <table class="w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($rankingData as $item)
-                    <tr class="hover:bg-gray-50 transition-colors duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item['nik'] }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item['alamat'] }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex justify-end gap-2">
-                                <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item['ranking'] }}</div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <!-- Card Footer with Pagination -->
-        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <div class="text-sm text-gray-500">
-                Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">10</span> dari <span class="font-medium">{{ count($alternatifs) }}</span> hasil
-            </div>
-            <div class="flex space-x-2">
-                <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 transition-colors duration-150" disabled>
-                    Sebelumnya
-                </button>
-                <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150">
-                    Selanjutnya
-                </button>
-            </div>
-        </div>
-
-
+    <!-- Tab Navigation -->
+    <div class="mb-4 border-b border-gray-200">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="rankingTabs" role="tablist">
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg" id="all-tab" data-tabs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">Semua Penerima</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" id="per-desa-tab" data-tabs-target="#per-desa" type="button" role="tab" aria-controls="per-desa" aria-selected="false">Per Desa</button>
+            </li>
+        </ul>
     </div>
 
-    <!-- Chart Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <!-- Chart Header -->
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-            <h3 class="text-lg font-medium text-gray-900">Visualisasi Net Flow Perangkingan</h3>
-            <p class="text-sm text-gray-500 mt-1">Grafik batang menampilkan nilai Net Flow untuk setiap alternatif</p>
+    <!-- Tab Content -->
+    <div id="rankingTabsContent">
+        <!-- All Ranking Tab -->
+        <div class="hidden p-4 rounded-lg bg-gray-50" id="all" role="tabpanel" aria-labelledby="all-tab">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                <!-- Card Header -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">Semua Hasil Perangkingan</h3>
+                    </div>
+                    <div>
+                        <a href="{{ route('hasil-perangkingan.pdf') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150">
+                            Download PDF
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="overflow-x-auto">
+                    <table class="w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desa</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($rankingData as $item)
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['ranking'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['desa'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['nik'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['alamat'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-2">
+                                        <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Chart Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+                <!-- Chart Header -->
+                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="text-lg font-medium text-gray-900">Visualisasi Net Flow Perangkingan</h3>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="p-6">
+                    <div class="relative" style="height: 400px;">
+                        <canvas id="rankingChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Chart Container -->
-        <div class="p-6">
-            <div class="relative" style="height: 400px;">
-                <canvas id="rankingChart"></canvas>
+        <!-- Per Desa Ranking Tab -->
+        <div class="hidden p-4 rounded-lg bg-gray-50" id="per-desa" role="tabpanel" aria-labelledby="per-desa-tab">
+            @foreach($rankingPerDesa as $desaId => $items)
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                <!-- Card Header -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">Desa {{ $items->first()['desa'] ?? 'Tidak Diketahui' }}</h3>
+                        <p class="text-sm text-gray-500 mt-1">4 Calon Penerima Terbaik dari Desa Ini</p>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="overflow-x-auto">
+                    <table class="w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <!-- Di bagian tabel per desa -->
+                            @foreach($items as $item)
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['local_ranking'] }}</div>
+                                    <div class="text-xs text-gray-500">Global: {{ $item['global_ranking'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['nik'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['alamat'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-2">
+                                        <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            @endforeach
         </div>
     </div>
 
-    <!-- Chart.js Script -->
+    <!-- Tab Script -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('rankingChart').getContext('2d');
+            // Tab functionality
+            const tabs = document.querySelectorAll('[data-tabs-target]');
+            const tabContents = document.querySelectorAll('[role="tabpanel"]');
 
+            // Show first tab by default
+            tabs[0].classList.add('border-primary-500', 'text-primary-600');
+            tabContents[0].classList.remove('hidden');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = document.querySelector(tab.getAttribute('data-tabs-target'));
+
+                    // Hide all tab contents
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    // Remove active styles from all tabs
+                    tabs.forEach(t => {
+                        t.classList.remove('border-primary-500', 'text-primary-600');
+                        t.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+                    });
+
+                    // Show selected tab content
+                    target.classList.remove('hidden');
+
+                    // Add active styles to selected tab
+                    tab.classList.add('border-primary-500', 'text-primary-600');
+                    tab.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+                });
+            });
+
+            // Chart.js initialization
+            const ctx = document.getElementById('rankingChart').getContext('2d');
             const chartData = @json($chartData);
 
             new Chart(ctx, {

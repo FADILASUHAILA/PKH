@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Alternatif;
 use App\Models\Desa;
+use Faker\Factory as Faker;
 
 class AlternatifSeeder extends Seeder
 {
@@ -18,20 +19,24 @@ class AlternatifSeeder extends Seeder
             $this->call(DesaTableSeeder::class);
         }
 
-        // Data contoh alternatif
-        $alternatifs = [
-            ['kode' => 'A1', 'nama' => 'Budi Santoso', 'desa_id' => Desa::inRandomOrder()->first()->id],
-            ['kode' => 'A2', 'nama' => 'Ani Wijaya', 'desa_id' => Desa::inRandomOrder()->first()->id],
-            ['kode' => 'A3', 'nama' => 'Citra Dewi', 'desa_id' => Desa::inRandomOrder()->first()->id],
-            ['kode' => 'A4', 'nama' => 'Doni Pratama', 'desa_id' => Desa::inRandomOrder()->first()->id],
-            ['kode' => 'A5', 'nama' => 'Eka Putri', 'desa_id' => Desa::inRandomOrder()->first()->id],
-        ];
+        $faker = Faker::create('id_ID');
 
-        foreach ($alternatifs as $alternatif) {
+        // Generate 200 data alternatif
+        for ($i = 1; $i <= 200; $i++) {
+            $gender = $faker->randomElement(['male', 'female']);
+            
+            $alternatif = [
+                'kode' => 'A' . $i,
+                'nama' => $gender === 'male' 
+                    ? $faker->firstNameMale . ' ' . $faker->lastName
+                    : $faker->firstNameFemale . ' ' . $faker->lastName,
+                'desa_id' => Desa::inRandomOrder()->first()->id
+            ];
+
             Alternatif::create($alternatif);
         }
 
-        // Atau gunakan factory untuk membuat data dummy
-        // Alternatif::factory()->count(20)->create();
+        // Atau bisa juga menggunakan factory jika sudah dibuat:
+        // Alternatif::factory()->count(200)->create();
     }
 }
