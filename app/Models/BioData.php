@@ -12,7 +12,7 @@ class BioData extends Model
 
     protected $fillable = [
         'nik',
-        'alamat', 
+        'alamat',
         'no_hp',
         'alternatif_id'
     ];

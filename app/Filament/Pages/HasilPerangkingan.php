@@ -39,7 +39,6 @@ class HasilPerangkingan extends Page
                 return [
                     'nama' => $item->alternatif->nama,
                     'nik' => $item->alternatif->biodata->nik ?? '-',
-                    'alamat' => $item->alternatif->biodata->alamat ?? '-',
                     'no_hp' => $item->alternatif->biodata->no_hp ?? '-',
                     'desa' => $item->alternatif->desa->nama_desa ?? '-',
                     'desa_id' => $item->alternatif->desa_id ?? null,
@@ -57,7 +56,6 @@ class HasilPerangkingan extends Page
                         return [
                             'nama' => $item->alternatif->nama,
                             'nik' => $item->alternatif->biodata->nik ?? '-',
-                            'alamat' => $item->alternatif->biodata->alamat ?? '-',
                             'no_hp' => $item->alternatif->biodata->no_hp ?? '-',
                             'desa' => $item->alternatif->desa->nama_desa ?? '-',
                             'desa_id' => $item->alternatif->desa_id ?? null,
@@ -129,10 +127,11 @@ class HasilPerangkingan extends Page
         ];
     }
 
-    public function downloadPdf()
+    public function downloadAllPdf()
     {
         $options = new Options();
-        $options->set('defaultFont', 'Courier');
+        $options->set('defaultFont', 'Arial');
+        $options->set('isRemoteEnabled', true);
         $dompdf = new Dompdf($options);
 
         $rankingPerDesa = session('rankingPerDesa');
@@ -141,12 +140,18 @@ class HasilPerangkingan extends Page
         }
 
         $html = view('filament.pages.pdf-hasil-perangkingan', [
-            'rankingPerDesa' => $rankingPerDesa
+            'rankingPerdesa' => $rankingPerDesa
         ])->render();
 
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'potrait');
+        $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $dompdf->stream('hasil_perangkingan_per_desa.pdf');
+        
+        return response()->streamDownload(
+            function () use ($dompdf) {
+                echo $dompdf->output();
+            },
+            'hasil_perangkingan_semua_desa.pdf'
+        );
     }
 }

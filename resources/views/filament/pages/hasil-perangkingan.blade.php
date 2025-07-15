@@ -4,8 +4,9 @@
         <span class="font-medium">Belum ada data perangkingan. Silahkan lakukan perhitungan PROMETHEE terlebih dahulu.</span>
     </div>
     @else
+
     <!-- Tab Navigation -->
-    <div class="mb-4 border-b border-gray-200">
+    <div class="mb-4 flex justify-between border-b border-gray-200">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="rankingTabs" role="tablist">
             <li class="me-2" role="presentation">
                 <button class="inline-block p-4 border-b-2 rounded-t-lg" id="all-tab" data-tabs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">Semua Penerima</button>
@@ -14,6 +15,15 @@
                 <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" id="per-desa-tab" data-tabs-target="#per-desa" type="button" role="tab" aria-controls="per-desa" aria-selected="false">Per Desa</button>
             </li>
         </ul>
+        <!-- Add Download All Button at the top -->
+        <div class="flex justify-end">
+            <button wire:click="downloadAllPdf" class="inline-flex items-center px-4 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Download (PDF)
+            </button>
+        </div>
     </div>
 
     <!-- Tab Content -->
@@ -26,11 +36,6 @@
                     <div>
                         <h3 class="text-lg font-medium text-gray-900">Semua Hasil Perangkingan</h3>
                     </div>
-                    <div>
-                        <a href="{{ route('hasil-perangkingan.pdf') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150">
-                            Download PDF
-                        </a>
-                    </div>
                 </div>
 
                 <!-- Table Container -->
@@ -42,7 +47,6 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desa</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
                             </tr>
@@ -61,9 +65,6 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $item['nik'] }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $item['alamat'] }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
@@ -104,7 +105,6 @@
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div>
                         <h3 class="text-lg font-medium text-gray-900">Desa {{ $items->first()['desa'] ?? 'Tidak Diketahui' }}</h3>
-                        <p class="text-sm text-gray-500 mt-1">4 Calon Penerima Terbaik dari Desa Ini</p>
                     </div>
                 </div>
 
@@ -116,7 +116,6 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
                             </tr>
@@ -134,9 +133,6 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $item['nik'] }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $item['alamat'] }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>

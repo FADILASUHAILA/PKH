@@ -8,7 +8,7 @@ use App\Models\Desa;
 class DesaTableSeeder extends Seeder
 {
     protected $realIndonesianVillages = [
-        'Alue Gunto', 'Ampeh', 'Ara', 'Awe', 'Blang', 'Calong', 'Cibrek Baroh', 'Cibrek Tunong'
+        'Alue Gunto', 'Peurupok', 'Ara', 'Awe', 'Blang', 'Calong', 'Cibrek Baroh', 'Cibrek Tunong'
     ];
 
     public function run(): void
