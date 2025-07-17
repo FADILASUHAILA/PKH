@@ -11,9 +11,9 @@ class SubKriteriaSeeder extends Seeder
     public function run(): void
     {
         // Pastikan ada data kriteria terlebih dahulu
-        if (Kriteria::count() === 0) {
-            $this->call(KriteriaSeeder::class);
-        }
+        // if (Kriteria::count() === 0) {
+        //     $this->call(KriteriaSeeder::class);
+        // }
 
         // Data sub kriteria untuk setiap kriteria
         $subKriteriaData = [

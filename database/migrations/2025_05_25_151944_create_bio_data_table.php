@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('bio_data', function (Blueprint $table) {
             $table->id();
             $table->string('nik')->unique();
-            $table->text('alamat');
+            $table->text('alamat')->nullable();
             $table->string('no_hp');
             $table->unsignedBigInteger('alternatif_id');
             $table->softDeletes();

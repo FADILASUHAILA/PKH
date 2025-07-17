@@ -21,12 +21,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
         ]);
         $this->call([
-            DesaTableSeeder::class,
-            AlternatifSeeder::class,
+            // DesaTableSeeder::class,
+            // AlternatifSeeder::class,
             KriteriaSeeder::class,
             SubKriteriaSeeder::class,
-            PenerimaSeeder::class,
-            PenilaianSeeder::class,
+            // PenerimaSeeder::class,
+            // PenilaianSeeder::class,
             // Seeder lainnya...
         ]);
     }

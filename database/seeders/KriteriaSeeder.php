@@ -12,9 +12,9 @@ class KriteriaSeeder extends Seeder
     public function run(): void
     {
         // Pastikan ada data alternatif terlebih dahulu
-        if (Alternatif::count() === 0) {
-            $this->call(AlternatifSeeder::class);
-        }
+        // if (Alternatif::count() === 0) {
+        //     $this->call(AlternatifSeeder::class);
+        // }
 
 
         $kriteriaContoh = [
