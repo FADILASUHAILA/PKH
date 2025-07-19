@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('penilaian_headers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alternatif_id')->nullable()->constrained();
+            $table->foreignId('alternatif_id')
+                ->nullable()
+                ->constrained()
+                ->onDelete('cascade');  // Tambahkan iniff
             $table->dateTime('tanggal_penilaian');
             $table->text('catatan')->nullable();
             $table->timestamps();

@@ -40,7 +40,7 @@ class PenilaianSeeder extends Seeder
                     'kriteria_id' => $kriteria->id,
                     'subkriteria_id' => $subkriteria->id,
                     'nilai' => $subkriteria->nilai,
-                    // 'header_id' => $header->id
+                    // 'header_id' => $header->id 
                 ]);
             }
         }

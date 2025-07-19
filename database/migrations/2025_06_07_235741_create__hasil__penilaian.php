@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
             
             // Composite index for better query performance
-            // $table->index(['header_id', 'alternatif_id']);
+            $table->index(['header_id', 'alternatif_id']);
             // $table->index(['header_id', 'ranking']);
         });
     }
