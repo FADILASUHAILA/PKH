@@ -44,33 +44,6 @@ class Penilaian extends Page
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('downloadTemplate')
-                ->label('Download Template Excel')
-                ->icon('heroicon-o-document-arrow-down')
-                ->color('info')
-                ->action(function (ExcelImportService $importService) {
-                    try {
-                        $spreadsheet = $importService->generateTemplate();
-                        $writer = new Xlsx($spreadsheet);
-                        
-                        $fileName = 'template_import_penilaian_' . date('Y-m-d_H-i-s') . '.xlsx';
-                        
-                        return new StreamedResponse(function() use ($writer) {
-                            $writer->save('php://output');
-                        }, 200, [
-                            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-                            'Cache-Control' => 'max-age=0',
-                        ]);
-                    } catch (\Exception $e) {
-                        Notification::make()
-                            ->title('Gagal Download Template')
-                            ->body($e->getMessage())
-                            ->danger()
-                            ->send();
-                    }
-                }),
-
             Action::make('importExcel')
                 ->label('Import Excel')
                 ->icon('heroicon-o-document-arrow-up')
