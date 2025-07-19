@@ -47,16 +47,16 @@ class ExcelImportService
 
             // Skip header row
             $dataRows = array_slice($rows, 1);
-            
+
             $importedCount = 0;
             $errors = [];
 
             foreach ($dataRows as $index => $row) {
                 $rowNumber = $index + 2; // +2 because we skipped header and array is 0-indexed
-                
+
                 // Use individual transaction for each row to prevent rollback cascade
                 DB::beginTransaction();
-                
+
                 try {
                     // Skip empty rows
                     if (empty(array_filter($row))) {
@@ -78,7 +78,10 @@ class ExcelImportService
                     // $alamat = isset($row[4]) ? trim($row[4]) : null;
                     // $noHp = isset($row[5]) ? $this->formatPhoneNumber(trim($row[5])) : null;
 
-                    $kode = 'ALT-' . Str::random(8);
+                    do {
+                        $kode = 'A' . random_int(1, 200);
+                    } while (DB::table('alternatifs')->where('kode', $kode)->exists());
+
                     $alamat = null;
                     $nik = isset($row[0]) ? $this->formatNik(trim($row[0])) : null;
                     $nama = trim($row[1]);
@@ -131,7 +134,6 @@ class ExcelImportService
 
                     DB::commit();
                     $importedCount++;
-
                 } catch (Exception $e) {
                     DB::rollBack();
                     $errors[] = "Baris {$rowNumber}: " . $e->getMessage();
@@ -143,13 +145,12 @@ class ExcelImportService
                 'success' => true,
                 'imported_count' => $importedCount,
                 'errors' => $errors,
-                'message' => "Berhasil mengimpor {$importedCount} data" . 
-                           (count($errors) > 0 ? " dengan " . count($errors) . " error" : "")
+                'message' => "Berhasil mengimpor {$importedCount} data" .
+                    (count($errors) > 0 ? " dengan " . count($errors) . " error" : "")
             ];
-
         } catch (Exception $e) {
             Log::error("Excel import failed: " . $e->getMessage());
-            
+
             return [
                 'success' => false,
                 'message' => 'Gagal mengimpor data: ' . $e->getMessage(),
@@ -236,7 +237,6 @@ class ExcelImportService
             $this->prosesLuasLantai($alternatif, $luasLantai, $rowNumber, $errors);
             $this->prosesJenisLantai($alternatif, $jenisLantai, $rowNumber, $errors);
             $this->prosesJenisDinding($alternatif, $jenisDinding, $rowNumber, $errors);
-
         } catch (Exception $e) {
             $errors[] = "Baris {$rowNumber}: Error memproses data indikasi: " . $e->getMessage();
             Log::error("Error processing indikasi data for row {$rowNumber}: " . $e->getMessage());

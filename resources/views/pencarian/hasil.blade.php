@@ -6,7 +6,7 @@
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <!-- Header -->
             <div class="bg-rose-600 px-6 py-8 text-center">
-                <h1 class="text-3xl font-bold text-white">Data Diterima PKH</h1>
+                <h1 class="text-3xl font-bold text-white">Cek Informasi PKH</h1>
                 <p class="mt-2 text-rose-100">Berikut data lengkap penerima bantuan</p>
             </div>
             
@@ -22,18 +22,6 @@
                                 </svg>
                             </div>
                             <h3 class="text-lg font-bold text-gray-800">{{ $alternatif->nama }}</h3>
-                            <p class="text-sm text-gray-500 mb-4">Kode: {{ $alternatif->kode }}</p>
-                            
-                            <div class="mt-6 space-y-3">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <span class="px-3 py-1 bg-rose-100 text-rose-800 text-xs font-medium rounded-full">
-                                        Proses
-                                    </span>
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                                        PKH Tahap {{ rand(1, 4) }}
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     
@@ -64,30 +52,6 @@
                                     <div>
                                         <p class="text-sm text-gray-500">No. HP</p>
                                         <p class="font-medium">{{ $alternatif->biodata->no_hp ?? '-' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Program Info -->
-                            <div class="bg-gray-50 rounded-lg p-5">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                                    <svg class="w-5 h-5 text-gray-500 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                                    </svg>
-                                    Informasi Bantuan
-                                </h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div class="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-center">
-                                        <p class="text-sm text-gray-500">Tanggal Daftar</p>
-                                        <p class="font-medium text-indigo-600">{{ now()->subMonths(rand(1,12))->format('d M Y') }}</p>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-center">
-                                        <p class="text-sm text-gray-500">Jenis Bantuan</p>
-                                        <p class="font-medium text-indigo-600">PKH Reguler</p>
-                                    </div>
-                                    <div class="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-center">
-                                        <p class="text-sm text-gray-500">Penerimaan Terakhir</p>
-                                        <p class="font-medium text-indigo-600">{{ now()->subMonths(1)->format('d M Y') }}</p>
                                     </div>
                                 </div>
                             </div>

@@ -8,7 +8,6 @@
             <svg class="mx-auto h-12 w-12 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <h2 class="mt-2 text-2xl font-extralight text-gray-800">Sistem Informasi</h2>
             <h1 class="text-3xl font-bold text-rose-600">Bantuan PKH</h1>
         </div>
 
@@ -16,7 +15,7 @@
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-rose-100">
             <!-- Header -->
             <div class="bg-white px-6 py-8 border-b border-rose-100">
-                <h2 class="text-2xl font-light text-center text-gray-800">Cari Calon Penerima</h2>
+                <h2 class="text-2xl font-light text-center text-gray-800">Pencarian Data PM</h2>
                 <p class="mt-1 text-sm text-center text-rose-500">Masukkan Nomor Induk Kependudukan (NIK) penerima</p>
             </div>
             
