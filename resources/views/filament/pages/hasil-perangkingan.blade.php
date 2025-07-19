@@ -14,15 +14,6 @@
                 <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" id="per-desa-tab" data-tabs-target="#per-desa" type="button" role="tab" aria-controls="per-desa" aria-selected="false">Per Desa</button>
             </li>
         </ul>
-        <!-- Add Download All Button at the top -->
-        <div class="flex justify-end">
-            <button wire:click="downloadAllPdf" class="inline-flex items-center px-4 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                Download (PDF)
-            </button>
-        </div>
     </div>
 
     <!-- Tab Content -->
@@ -34,6 +25,7 @@
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div>
                         <h3 class="text-lg font-medium text-gray-900">Semua Hasil Perangkingan</h3>
+                        <p class="text-sm text-gray-600 mt-1">Ranking global semua calon penerima bantuan PKH</p>
                     </div>
                 </div>
 
@@ -54,7 +46,14 @@
                             @foreach($rankingData as $item)
                             <tr class="hover:bg-gray-50 transition-colors duration-150">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $item['ranking'] }}</div>
+                                    <div class="flex items-center">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 text-sm font-bold text-white 
+                                            @if($item['ranking'] <= 3) bg-yellow-500 
+                                            @elseif($item['ranking'] <= 10) bg-blue-500 
+                                            @else bg-gray-500 @endif rounded-full">
+                                            {{ $item['ranking'] }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
@@ -69,9 +68,7 @@
                                     <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex justify-end gap-2">
-                                        <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
-                                    </div>
+                                    <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
                                 </td>
                             </tr>
                             @endforeach
@@ -98,12 +95,37 @@
 
         <!-- Per Desa Ranking Tab -->
         <div class="hidden p-4 rounded-lg bg-gray-50" id="per-desa" role="tabpanel" aria-labelledby="per-desa-tab">
+            <!-- Download Button for Per Desa Tab -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">Hasil Perangkingan Per Desa</h2>
+                    <p class="text-sm text-gray-600 mt-1">Menampilkan maksimal 8 penerima terbaik per desa berdasarkan ranking global</p>
+                </div>
+                <div class="flex gap-2">
+                    <button wire:click="downloadPerDesaPdf" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-800 focus:outline-none focus:border-green-900 focus:ring focus:ring-green-300 disabled:opacity-25 transition">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Download PDF Per Desa
+                    </button>
+                </div>
+            </div>
+
             @foreach($rankingPerDesa as $desaId => $items)
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
                 <!-- Card Header -->
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div>
                         <h3 class="text-lg font-medium text-gray-900">Desa {{ $items->first()['desa'] ?? 'Tidak Diketahui' }}</h3>
+                        <p class="text-sm text-gray-600">{{ $items->count() }} penerima terpilih</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button wire:click="downloadDesaPdf({{ $desaId }})" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            PDF
+                        </button>
                     </div>
                 </div>
 
@@ -112,17 +134,26 @@
                     <table class="w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking Desa</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No HP</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Net Flow</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking Global</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <!-- Di bagian tabel per desa -->
                             @foreach($items as $item)
                             <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 text-sm font-bold text-white 
+                                            @if($item['local_ranking'] <= 3) bg-yellow-500 
+                                            @else bg-blue-600 @endif rounded-full">
+                                            {{ $item['local_ranking'] }}
+                                        </span>
+                                    </div>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $item['nama'] }}</div>
                                 </td>
@@ -133,13 +164,16 @@
                                     <div class="text-sm font-medium text-gray-900">{{ $item['no_hp'] }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex justify-end gap-2">
-                                        <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
-                                    </div>
+                                    <div class="text-sm font-medium text-gray-900">{{ number_format($item['net_flow'], 4) }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $item['local_ranking'] }}</div>
-                                </td> 
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                        @if($item['global_ranking'] <= 10) bg-green-100 text-green-800 
+                                        @elseif($item['global_ranking'] <= 50) bg-yellow-100 text-yellow-800 
+                                        @else bg-gray-100 text-gray-800 @endif">
+                                        #{{ $item['global_ranking'] }}
+                                    </span>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

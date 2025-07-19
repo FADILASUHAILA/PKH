@@ -413,7 +413,14 @@ class ExcelImportService
                 ]
             );
 
-            Log::info('Penilaian berhasil diproses', $penilaian->toArray());
+            Log::info('Penilaian berhasil diproses dengan nilai otomatis dari Excel import', [
+                'alternatif_id' => $alternatif->id,
+                'kriteria_id' => $kriteriaId,
+                'subkriteria_id' => $subkriteria->id,
+                'nilai' => $subkriteria->nilai,
+                'nama_subkriteria' => $namaSubkriteria,
+                'row_number' => $rowNumber
+            ]);
         } catch (\Exception $e) {
             $errors[] = "Baris {$rowNumber}: Gagal menyimpan penilaian untuk kriteria ID {$kriteriaId}: " . $e->getMessage();
             Log::error('Gagal menyimpan penilaian', [

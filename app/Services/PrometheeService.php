@@ -4,7 +4,11 @@ namespace App\Services;
 use App\Models\Alternatif;
 use App\Models\Kriteria;
 use App\Models\Penilaian;
+use App\Models\HasilPenilaian;
+use App\Models\PenilaianHeader;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 class PrometheeService
 {
     private $alternatifs;
@@ -20,6 +24,8 @@ class PrometheeService
     public function calculate()
     {
         try {
+            DB::beginTransaction();
+            
             $this->loadData();
             
             if ($this->alternatifs->count() < 2) {
@@ -32,10 +38,16 @@ class PrometheeService
             $this->calculatePreferenceMatrix();
             $this->calculateFlows();
             $this->calculateRanking();
+            
+            // Simpan hasil ke database
+            $this->saveResults();
 
+            DB::commit();
+            
             return $this->getAllResults();
 
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error dalam PROMETHEE: ' . $e->getMessage());
             throw $e;
         }
@@ -43,18 +55,36 @@ class PrometheeService
 
     private function loadData()
     {
-        $this->alternatifs = Alternatif::has('penilaian')
-            ->with(['penilaian' => function($q) {
-                $q->orderBy('kriteria_id');
-            }])
-            ->orderBy('id')
-            ->get();
-
         $this->kriterias = Kriteria::orderBy('id')->get();
 
         if ($this->kriterias->isEmpty()) {
             throw new \Exception("Tidak ada kriteria yang terdefinisi");
         }
+
+        $jumlahKriteria = $this->kriterias->count();
+
+        // Ambil semua alternatif dengan penilaian yang tidak null
+        $this->alternatifs = Alternatif::with(['penilaian' => function($q) {
+            $q->whereNotNull('nilai')->orderBy('kriteria_id');
+        }])
+        ->orderBy('id')
+        ->get();
+
+        // Filter alternatif yang benar-benar memiliki penilaian lengkap untuk semua kriteria
+        $this->alternatifs = $this->alternatifs->filter(function($alternatif) use ($jumlahKriteria) {
+            $penilaianLengkap = $alternatif->penilaian->where('nilai', '!=', null)->count();
+            return $penilaianLengkap === $jumlahKriteria;
+        });
+
+        if ($this->alternatifs->count() < 2) {
+            throw new \Exception("Minimal 2 alternatif harus memiliki penilaian lengkap untuk semua kriteria. Saat ini hanya {$this->alternatifs->count()} alternatif yang memenuhi syarat.");
+        }
+
+        Log::info('Data loaded untuk PROMETHEE', [
+            'jumlah_alternatif' => $this->alternatifs->count(),
+            'jumlah_kriteria' => $jumlahKriteria,
+            'alternatif_ids' => $this->alternatifs->pluck('id')->toArray()
+        ]);
     }
 
     private function normalizeWeights()
@@ -166,6 +196,39 @@ class PrometheeService
         foreach ($sortedFlows as $altId => $value) {
             $this->ranking[$altId] = $rank++;
         }
+    }
+
+    private function saveResults()
+    {
+        // Hapus hasil perhitungan sebelumnya
+        HasilPenilaian::truncate();
+        
+        // Buat header penilaian baru
+        $header = PenilaianHeader::create([
+            'tanggal_penilaian' => now(),
+            'catatan' => 'Hasil Perhitungan PROMETHEE - ' . now()->format('d/m/Y H:i:s')
+        ]);
+
+        // Simpan hasil untuk setiap alternatif
+        foreach ($this->alternatifs as $alternatif) {
+            $altId = $alternatif->id;
+            
+            HasilPenilaian::create([
+                'alternatif_id' => $altId,
+                'decision_matrix' => $this->decisionMatrix[$altId] ?? [],
+                'preference_matrix' => $this->preferenceMatrix[$altId] ?? [],
+                'leaving_flow' => $this->leavingFlow[$altId] ?? 0,
+                'entering_flow' => $this->enteringFlow[$altId] ?? 0,
+                'net_flow' => $this->netFlow[$altId] ?? 0,
+                'ranking' => $this->ranking[$altId] ?? 999,
+                'header_id' => $header->id
+            ]);
+        }
+        
+        Log::info('Hasil PROMETHEE berhasil disimpan ke database', [
+            'jumlah_alternatif' => count($this->alternatifs),
+            'header_id' => $header->id
+        ]);
     }
 
     public function getAllResults()

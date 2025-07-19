@@ -35,13 +35,7 @@ class HasilPenilaian extends Page
 
     public function mount(): void
     {
-        // Ambil data dari database
-        $this->hasilPenilaian = \App\Models\HasilPenilaian::with(['alternatif', 'penilaian'])
-            ->latest()
-            ->get()
-            ->groupBy('penilaian_id')
-            ->first(); // Ambil hasil penilaian terbaru
-
+        // Prioritas: ambil dari parameter request jika ada
         if ($results = request('results')) {
             $results = json_decode($results, true);
 
@@ -56,9 +50,47 @@ class HasilPenilaian extends Page
             // Load models fresh from database
             $this->alternatifs = \App\Models\Alternatif::findMany($results['alternatif_ids'] ?? []);
             $this->kriterias = \App\Models\Kriteria::findMany($results['kriteria_ids'] ?? []);
-            // $this->ranking = HasilPenilaian::onlyEvaluated()->byRanking()->get();
+        } else {
+            // Jika tidak ada parameter, ambil dari database
+            $this->loadFromDatabase();
+        }
+    }
 
-            // dd($this->decisionMatrix);
+    private function loadFromDatabase(): void
+    {
+        // Ambil hasil penilaian terbaru dari database
+        $this->hasilPenilaian = \App\Models\HasilPenilaian::with(['alternatif.biodata', 'header'])
+            ->latest()
+            ->get();
+
+        if ($this->hasilPenilaian->isNotEmpty()) {
+            // Ambil data untuk tampilan
+            $this->alternatifs = $this->hasilPenilaian->pluck('alternatif')->unique('id');
+            $this->kriterias = \App\Models\Kriteria::all();
+
+            // Rekonstruksi data dari database
+            foreach ($this->hasilPenilaian as $hasil) {
+                $altId = $hasil->alternatif_id;
+                
+                $this->decisionMatrix[$altId] = $hasil->decision_matrix ?? [];
+                $this->preferenceMatrix[$altId] = $hasil->preference_matrix ?? [];
+                $this->leavingFlow[$altId] = $hasil->leaving_flow ?? 0;
+                $this->enteringFlow[$altId] = $hasil->entering_flow ?? 0;
+                $this->netFlow[$altId] = $hasil->net_flow ?? 0;
+                $this->ranking[$altId] = $hasil->ranking ?? 999;
+            }
+
+            // Set results array untuk konsistensi
+            $this->results = [
+                'decisionMatrix' => $this->decisionMatrix,
+                'preferenceMatrix' => $this->preferenceMatrix,
+                'leavingFlow' => $this->leavingFlow,
+                'enteringFlow' => $this->enteringFlow,
+                'netFlow' => $this->netFlow,
+                'ranking' => $this->ranking,
+                'alternatif_ids' => $this->alternatifs->pluck('id')->toArray(),
+                'kriteria_ids' => $this->kriterias->pluck('id')->toArray()
+            ];
         }
     }
 }

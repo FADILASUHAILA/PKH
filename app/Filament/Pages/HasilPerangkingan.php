@@ -140,7 +140,9 @@ class HasilPerangkingan extends Page
         }
 
         $html = view('filament.pages.pdf-hasil-perangkingan', [
-            'rankingPerdesa' => $rankingPerDesa
+            'rankingPerdesa' => $rankingPerDesa,
+            'title' => 'Laporan Hasil Perangkingan PKH - Semua Desa',
+            'tanggal' => now()->format('d/m/Y H:i:s')
         ])->render();
 
         $dompdf->loadHtml($html);
@@ -151,7 +153,75 @@ class HasilPerangkingan extends Page
             function () use ($dompdf) {
                 echo $dompdf->output();
             },
-            'hasil_perangkingan_semua_desa.pdf'
+            'hasil_perangkingan_semua_desa_' . now()->format('Y-m-d') . '.pdf'
+        );
+    }
+
+    public function downloadPerDesaPdf()
+    {
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new Dompdf($options);
+
+        $rankingPerDesa = $this->rankingPerDesa;
+        if (!$rankingPerDesa) {
+            return abort(404, 'Data perangkingan per desa tidak ditemukan');
+        }
+
+        $html = view('filament.pages.pdf-hasil-perangkingan-per-desa', [
+            'rankingPerdesa' => $rankingPerDesa,
+            'title' => 'Laporan Hasil Perangkingan PKH - Per Desa',
+            'tanggal' => now()->format('d/m/Y H:i:s'),
+            'totalDesa' => count($rankingPerDesa),
+            'totalPenerima' => $rankingPerDesa->flatten()->count()
+        ])->render();
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        return response()->streamDownload(
+            function () use ($dompdf) {
+                echo $dompdf->output();
+            },
+            'hasil_perangkingan_per_desa_' . now()->format('Y-m-d') . '.pdf'
+        );
+    }
+
+    public function downloadDesaPdf($desaId)
+    {
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new Dompdf($options);
+
+        $rankingPerDesa = $this->rankingPerDesa;
+        if (!$rankingPerDesa || !isset($rankingPerDesa[$desaId])) {
+            return abort(404, 'Data desa tidak ditemukan');
+        }
+
+        $desaData = $rankingPerDesa[$desaId];
+        $namaDesaData = $desaData->first();
+        $namaDesa = $namaDesaData['desa'] ?? 'Tidak Diketahui';
+
+        $html = view('filament.pages.pdf-hasil-perangkingan-desa', [
+            'desaData' => $desaData,
+            'namaDesa' => $namaDesa,
+            'title' => 'Laporan Hasil Perangkingan PKH - Desa ' . $namaDesa,
+            'tanggal' => now()->format('d/m/Y H:i:s'),
+            'totalPenerima' => $desaData->count()
+        ])->render();
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        return response()->streamDownload(
+            function () use ($dompdf) {
+                echo $dompdf->output();
+            },
+            'hasil_perangkingan_desa_' . str_replace(' ', '_', strtolower($namaDesa)) . '_' . now()->format('Y-m-d') . '.pdf'
         );
     }
 }

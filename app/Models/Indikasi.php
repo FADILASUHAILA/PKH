@@ -37,6 +37,22 @@ class Indikasi extends Model
         'lansia' => 'string',
     ];
 
+    /**
+     * Model events untuk otomatis konversi ke penilaian
+     */
+    protected static function booted()
+    {
+        static::saved(function ($indikasi) {
+            // Otomatis konversi ke penilaian setelah data indikasi disimpan
+            $indikasi->konversiKePenilaian();
+        });
+
+        static::updated(function ($indikasi) {
+            // Otomatis konversi ulang ke penilaian setelah data indikasi diupdate
+            $indikasi->konversiKePenilaian();
+        });
+    }
+
     public function alternatif()
     {
         return $this->belongsTo(Alternatif::class);
@@ -271,10 +287,17 @@ class Indikasi extends Model
                 ],
                 [
                     'subkriteria_id' => $subkriteria->id,
+                    'nilai' => $subkriteria->nilai, // Otomatis mengisi nilai dari subkriteria
                 ]
             );
 
-            Log::info('Penilaian berhasil diproses', $penilaian->toArray());
+            Log::info('Penilaian berhasil diproses dengan nilai otomatis', [
+                'alternatif_id' => $alternatif->id,
+                'kriteria_id' => $kriteriaId,
+                'subkriteria_id' => $subkriteria->id,
+                'nilai' => $subkriteria->nilai,
+                'nama_subkriteria' => $namaSubkriteria
+            ]);
         } catch (\Exception $e) {
             Log::error('Gagal menyimpan penilaian', [
                 'error' => $e->getMessage(),

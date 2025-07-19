@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
         ]);
         $this->call([
-            // DesaTableSeeder::class,
+            DesaTableSeeder::class,
             // AlternatifSeeder::class,
             KriteriaSeeder::class,
             SubKriteriaSeeder::class,
