@@ -110,10 +110,6 @@
                                 <div class="text-sm text-gray-500">{{ $alternatif->created_at->format('d M Y') }}</div>
                                 <div class="text-xs text-gray-400">{{ $alternatif->created_at->format('H:i') }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</a>
-                                <a href="#" class="text-gray-600 hover:text-gray-900">Edit</a>
-                            </td>
                         </tr>
                         @empty
                         <tr>
