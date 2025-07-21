@@ -43,16 +43,16 @@
                             </p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <a href="{{ route('hasil.index') }}" 
+                            <!-- <a href="{{ route('hasil.index') }}" 
                                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
                                 <i class="fas fa-arrow-left mr-2"></i>
                                 Kembali ke Hasil
-                            </a>
-                            <a href="{{ route('hasil.detail-desa', $dataCalonPenerima['alternatif']->desa_id) }}" 
+                            </a> -->
+                            <!-- <a href="{{ route('hasil.detail-desa', $dataCalonPenerima['alternatif']->desa_id) }}" 
                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
                                 Lihat Desa {{ $dataCalonPenerima['alternatif']->desa->nama_desa }}
-                            </a>
+                            </a> -->
                         </div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
         </div>
 
         <!-- Detail Calon Penerima -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-8">
             <!-- Informasi Personal -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
@@ -109,11 +109,7 @@
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-gray-100">
                         <span class="text-gray-600 font-medium">Nama Lengkap</span>
-                        <span class="text-gray-900 font-bold">{{ $dataCalonPenerima['biodata']->nama }}</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                        <span class="text-gray-600 font-medium">Kode Alternatif</span>
-                        <span class="text-gray-900 font-medium">{{ $dataCalonPenerima['alternatif']->kode ?? '-' }}</span>
+                        <span class="text-gray-900 font-bold">{{ $dataCalonPenerima['alternatif']->nama }}</span>
                     </div>
                     <div class="flex justify-between items-center py-2">
                         <span class="text-gray-600 font-medium">Desa</span>
@@ -123,7 +119,7 @@
             </div>
 
             <!-- Informasi Penilaian -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <!-- <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                         <i class="fas fa-chart-line text-green-600 mr-2"></i>
@@ -152,7 +148,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- Posisi dan Status -->
