@@ -262,9 +262,7 @@ class Penilaian extends Page
                             ->success()
                             ->send();
 
-                        return redirect()->route('filament.admin.pages.hasil-penilaian', [
-                            'results' => json_encode($results)
-                        ]);
+                        return redirect()->route('filament.admin.pages.hasil-penilaian');
                     } catch (\Exception $e) {
                         Notification::make()
                             ->title('Gagal Menghitung PROMETHEE')
