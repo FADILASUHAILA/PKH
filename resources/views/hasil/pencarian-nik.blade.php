@@ -9,7 +9,7 @@
         <div class="mb-8">
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="p-6">
-                    <nav class="flex mb-4" aria-label="Breadcrumb">
+                    <!-- <nav class="flex mb-4" aria-label="Breadcrumb">
                         <ol class="inline-flex items-center space-x-1 md:space-x-3">
                             <li class="inline-flex items-center">
                                 <a href="{{ route('hasil.index') }}" class="text-blue-600 hover:text-blue-800 font-medium">
@@ -30,8 +30,8 @@
                                 </div>
                             </li>
                         </ol>
-                    </nav>
-                    
+                    </nav> -->
+
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <div class="mb-4 lg:mb-0">
                             <h1 class="text-3xl font-bold text-gray-900 flex items-center">
@@ -43,11 +43,11 @@
                             </p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <!-- <a href="{{ route('hasil.index') }}" 
-                               class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+                            <a href="{{ route('pencarian.index') }}"
+                                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
                                 <i class="fas fa-arrow-left mr-2"></i>
-                                Kembali ke Hasil
-                            </a> -->
+                                Kembali
+                            </a>
                             <!-- <a href="{{ route('hasil.detail-desa', $dataCalonPenerima['alternatif']->desa_id) }}" 
                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
@@ -62,33 +62,27 @@
         <!-- Status Kelulusan -->
         <div class="mb-8">
             @if($dataCalonPenerima['masuk_8_besar'])
-                <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-r-lg">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle text-green-400 text-3xl"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h2 class="text-2xl font-bold text-green-800">🎉 LOLOS REKOMENDASI</h2>
-                            <p class="text-green-700 mt-1">
-                                Selamat! Calon penerima masuk dalam <strong>8 besar</strong> di Desa {{ $dataCalonPenerima['alternatif']->desa->nama_desa }}
-                            </p>
-                        </div>
+            <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-r-lg">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-green-400 text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h2 class="text-2xl font-bold text-green-800">LOLOS REKOMENDASI</h2>
                     </div>
                 </div>
+            </div>
             @else
-                <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-times-circle text-red-400 text-3xl"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h2 class="text-2xl font-bold text-red-800">❌ TIDAK LOLOS REKOMENDASI</h2>
-                            <p class="text-red-700 mt-1">
-                                Calon penerima berada di <strong>luar 8 besar</strong> di Desa {{ $dataCalonPenerima['alternatif']->desa->nama_desa }}
-                            </p>
-                        </div>
+            <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-lg">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-times-circle text-red-400 text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h2 class="text-2xl font-bold text-red-800">TIDAK LOLOS REKOMENDASI</h2>
                     </div>
                 </div>
+            </div>
             @endif
         </div>
 
@@ -160,32 +154,14 @@
                 </h3>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Posisi di Desa -->
-                    <div class="text-center">
-                        <div class="flex items-center justify-center mb-3">
-                            @if($dataCalonPenerima['posisi_desa'] <= 3)
-                                <i class="fas fa-medal text-yellow-500 text-4xl"></i>
-                            @elseif($dataCalonPenerima['posisi_desa'] <= 8)
-                                <i class="fas fa-star text-green-500 text-4xl"></i>
-                            @else
-                                <i class="fas fa-circle text-gray-400 text-4xl"></i>
-                            @endif
-                        </div>
-                        <h4 class="text-2xl font-bold {{ $dataCalonPenerima['masuk_8_besar'] ? 'text-green-700' : 'text-red-700' }}">
-                            #{{ $dataCalonPenerima['posisi_desa'] }}
-                        </h4>
-                        <p class="text-gray-600 font-medium">Posisi di Desa</p>
-                        <p class="text-sm text-gray-500 mt-1">dari {{ $dataCalonPenerima['total_calon_desa'] }} calon</p>
-                    </div>
-
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Status Kelulusan -->
                     <div class="text-center">
                         <div class="flex items-center justify-center mb-3">
                             @if($dataCalonPenerima['masuk_8_besar'])
-                                <i class="fas fa-check-circle text-green-500 text-4xl"></i>
+                            <i class="fas fa-check-circle text-green-500 text-4xl"></i>
                             @else
-                                <i class="fas fa-times-circle text-red-500 text-4xl"></i>
+                            <i class="fas fa-times-circle text-red-500 text-4xl"></i>
                             @endif
                         </div>
                         <h4 class="text-lg font-bold {{ $dataCalonPenerima['masuk_8_besar'] ? 'text-green-700' : 'text-red-700' }}">
@@ -193,9 +169,9 @@
                         </h4>
                         <p class="text-gray-600 font-medium">Status Prediksi</p>
                         @if($dataCalonPenerima['hasil_penilaian']->status_rekomendasi)
-                            <p class="text-sm text-gray-500 mt-1">Status Resmi: {{ $dataCalonPenerima['hasil_penilaian']->status_rekomendasi }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Status Resmi: {{ $dataCalonPenerima['hasil_penilaian']->status_rekomendasi }}</p>
                         @else
-                            <p class="text-sm text-gray-500 mt-1">Belum ditetapkan resmi</p>
+                        <p class="text-sm text-gray-500 mt-1">Belum ditetapkan resmi</p>
                         @endif
                     </div>
 
@@ -207,25 +183,6 @@
                         <h4 class="text-2xl font-bold text-blue-700">8</h4>
                         <p class="text-gray-600 font-medium">Kuota Desa</p>
                         <p class="text-sm text-gray-500 mt-1">maksimal per desa</p>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="mt-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Posisi dalam Kuota Desa</span>
-                        <span class="text-sm text-gray-500">{{ $dataCalonPenerima['posisi_desa'] }}/8</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-3">
-                        @php
-                            $progressWidth = min(($dataCalonPenerima['posisi_desa'] / 8) * 100, 100);
-                            $progressColor = $dataCalonPenerima['masuk_8_besar'] ? 'bg-green-500' : 'bg-red-500';
-                        @endphp
-                        <div class="{{ $progressColor }} h-3 rounded-full transition-all duration-500" style="width: {{ $progressWidth }}%"></div>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>Posisi 1 (Terbaik)</span>
-                        <span>Posisi 8 (Batas Kuota)</span>
                     </div>
                 </div>
             </div>
@@ -243,14 +200,14 @@
                         <ul class="list-disc list-inside space-y-1">
                             <li><strong>Basis Seleksi:</strong> Peringkat berdasarkan nilai Net Flow tertinggi di masing-masing desa</li>
                             <li><strong>Kuota per Desa:</strong> Maksimal 8 orang yang dapat lolos rekomendasi</li>
-                            <li><strong>Status Saat Ini:</strong> 
+                            <li><strong>Status Saat Ini:</strong>
                                 @if($dataCalonPenerima['hasil_penilaian']->status_rekomendasi)
-                                    Sudah ditetapkan resmi
+                                Sudah ditetapkan resmi
                                 @else
-                                    Masih prediksi, belum ditetapkan resmi
+                                Masih prediksi, belum ditetapkan resmi
                                 @endif
                             </li>
-                            <li><strong>Desa {{ $dataCalonPenerima['alternatif']->desa->nama_desa }}:</strong> 
+                            <li><strong>Desa {{ $dataCalonPenerima['alternatif']->desa->nama_desa }}:</strong>
                                 Total {{ $dataCalonPenerima['total_calon_desa'] }} calon penerima terdaftar
                             </li>
                         </ul>
@@ -260,7 +217,7 @@
         </div>
 
         <!-- Pencarian Lain -->
-        <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <!-- <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-search text-blue-600 mr-2"></i>
                 Cari NIK Lain
@@ -281,19 +238,19 @@
                     Cari
                 </button>
             </form>
-        </div>
+        </div> -->
     </div>
 </div>
 
 <script>
-// Format input NIK hanya angka
-document.querySelector('input[name="nik"]').addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^0-9]/g, '');
-});
+    // Format input NIK hanya angka
+    document.querySelector('input[name="nik"]').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 
-// Auto focus pada input NIK
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('input[name="nik"]').focus();
-});
+    // Auto focus pada input NIK
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('input[name="nik"]').focus();
+    });
 </script>
 @endsection
